@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  runner:
+    image: tcardonne/github-runner:latest
+    environment:
+      RUNNER_NAME: "ga-dr-1"
+      RUNNER_REPOSITORY_URL: "https://github.com/ForThisPlayer10/app-for-ci-cd"
+      RUNNER_TOKEN: "AIXB2E4AQQN4J2ZKOOMW7PDDJRKQS"
+    networks:
+      cicd:
+        ipv4_address: 172.20.0.10
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  cicd:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.20.0.0/16"

@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  repository:
+    image: registry:2
+    ports:
+      - 5000:5000
+    restart: always
+    volumes:
+      - /home/bence/docker/image_repo/images:/var/lib/registry
+    networks:
+      - github_runner_cicd
+
+
+networks:
+  github_runner_cicd:
+    external: true

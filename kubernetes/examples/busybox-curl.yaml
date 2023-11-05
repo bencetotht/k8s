@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-c
+spec:
+  selector:
+    matchLabels:
+      app: busybox-c
+  template:
+    metadata:
+      labels:
+        app: busybox-c
+    spec:
+      containers:
+      - name: busybox-c
+        image: yauritux/busybox-curl
+        ports:
+        - containerPort: 80

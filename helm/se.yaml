@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: teamcity-se
+spec:
+  selector:
+    matchLabels:
+      app: teamcity-se
+      component: server
+  serviceName: teamcity-se-headless
+  updateStrategy:
+    type: RollingUpdate
+  replicas: 1
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        app: teamcity-se
+    spec:
+      containers:
+      - name: teamcity-se
+        image: jetbrains/teamcity-server:latest
+        ports:
+        - containerPort: 8111
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 100m
+            memory: 2048Mi
+        env:
+        - name: TEAMCITY_SERVER_MEM_OPTS
+          value: "-Xms512m -Xmx2048m"
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

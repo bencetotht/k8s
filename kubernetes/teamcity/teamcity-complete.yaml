@@ -1,0 +1,554 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teamcity-server-premium-logs-disk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teamcity-agent-premium-logs-disk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-teamcity-server
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: example-teamcity-server
+  template:
+    metadata:
+      labels:
+        app: example-teamcity-server
+        teamcity: server
+    spec:
+      containers:
+        - name: example-teamcity-server
+          image: jetbrains/teamcity-server
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8111
+          volumeMounts:
+            - name: teamcity-server-datadir-volume
+              mountPath: "/data/teamcity_server/datadir"
+            - name: teamcity-server-logs-volume
+              mountPath: "/opt/teamcity/logs"
+      volumes:
+        - name: teamcity-server-datadir-volume
+          persistentVolumeClaim:
+            claimName: teamcity-server-premium-datadir-disk
+        - name: teamcity-server-logs-volume
+          persistentVolumeClaim:
+            claimName: teamcity-server-premium-logs-disk
+---
+# ===========================
+# AGENT 1
+# ===========================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-teamcity-mssql-1
+spec:
+  selector:
+    matchLabels:
+      app: example-teamcity-mssql-1
+  template:
+    metadata:
+      labels:
+        app: example-teamcity-mssql-1
+        teamcity: sql
+        agentGroup: one
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: agentGroup
+                      operator: In
+                      values:
+                        - one
+                topologyKey: kubernetes.io/hostname
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: agentGroup
+                    operator: In
+                    values:
+                      - two
+#                      - three
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: example-teamcity-mssql-1
+          image: microsoft/mssql-server-linux:latest
+          imagePullPolicy: Always
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              value: "<mypassword>"
+          ports:
+            - containerPort: 1433
+          volumeMounts:
+            - name: mssqldb-volume-1
+              mountPath: /var/opt/mssql
+          resources:
+            requests:
+              memory: 2Gi
+      volumes:
+        - name: mssqldb-volume-1
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-teamcity-agent-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-teamcity-agent-1
+  template:
+    metadata:
+      labels:
+        app: example-teamcity-agent-1
+        teamcity: agent
+        agentGroup: one
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: agentGroup
+                      operator: In
+                      values:
+                        - one
+                topologyKey: kubernetes.io/hostname
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: agentGroup
+                    operator: In
+                    values:
+                      - two
+#                      - three
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: example-teamcity-agent-1
+          image: exampleregistry.azurecr.io/teamcity_agent:abcdef01
+          imagePullPolicy: Always
+          env:
+            # TODO: These should be handled in a more kubernetes-style way
+            # https://kubernetes.io/docs/concepts/services-networking/service/#environment-variables
+            # (e.g. at TEAMCITY_MSSQL_SERVICE_1_SERVICE_HOST)
+            - name: DBHOST_OVERRIDE
+              value: "teamcity-mssql-service-1.default,1433"
+            - name: SERVER_URL
+              value: http://teamcity-web-service-internal.default:8111
+            - name: MSSQL_URL
+              value: "teamcity-mssql-service-1.default,1433"
+            - name: AGENT_NAME
+              value: agent_1
+            - name: ACCEPT_EULA
+              value: "Y"
+          volumeMounts:
+            - name: teamcity-agent1-volume
+              mountPath: /data/teamcity_agent/conf
+      volumes:
+        - name: teamcity-agent1-volume
+          emptyDir: {}
+---
+# ===========================
+# AGENT 2
+# ===========================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-teamcity-mssql-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-teamcity-mssql-2
+  template:
+    metadata:
+      labels:
+        app: example-teamcity-mssql-2
+        teamcity: mssql
+        agentGroup: two
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: agentGroup
+                      operator: In
+                      values:
+                        - two
+                topologyKey: kubernetes.io/hostname
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: agentGroup
+                    operator: In
+                    values:
+                      - one
+#                      - three
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: example-teamcity-mssql-2
+          image: microsoft/mssql-server-linux:latest
+          imagePullPolicy: Always
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              value: "<mypassword>"
+          ports:
+            - containerPort: 1433
+          volumeMounts:
+            - name: mssqldb-volume-2
+              mountPath: /var/opt/mssql
+          resources:
+            requests:
+              memory: 2Gi
+      volumes:
+        - name: mssqldb-volume-2
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-teamcity-agent-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-teamcity-agent-2
+  template:
+    metadata:
+      labels:
+        app: example-teamcity-agent-2
+        teamcity: agent
+        agentGroup: two
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: agentGroup
+                      operator: In
+                      values:
+                        - two
+                topologyKey: kubernetes.io/hostname
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: agentGroup
+                    operator: In
+                    values:
+                      - one
+#                      - three
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: example-teamcity-agent-2
+          image: exampleregistry.azurecr.io/teamcity_agent:abcdef01
+          imagePullPolicy: Always
+          env:
+            # TODO: These should be handled in a more kubernetes-style way
+            # https://kubernetes.io/docs/concepts/services-networking/service/#environment-variables
+            - name: DBHOST_OVERRIDE
+              value: "teamcity-mssql-service-2.default,1433"
+            - name: SERVER_URL
+              value: http://teamcity-web-service-internal.default:8111
+            - name: MSSQL_URL
+              value: "teamcity-mssql-service-2.default,1433"
+            - name: AGENT_NAME
+              value: agent_2
+            - name: ACCEPT_EULA
+              value: "Y"
+          volumeMounts:
+            - name: teamcity-agent2-volume
+              mountPath: /data/teamcity_agent/conf
+      volumes:
+        - name: teamcity-agent2-volume
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-teamcity-mssql-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-teamcity-mssql-2
+  template:
+    metadata:
+      labels:
+        app: example-teamcity-mssql-2
+        teamcity: mssql
+        agentGroup: two
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: agentGroup
+                      operator: In
+                      values:
+                        - two
+                topologyKey: kubernetes.io/hostname
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: agentGroup
+                    operator: In
+                    values:
+                      - one
+#                      - three
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: example-teamcity-mssql-2
+          image: microsoft/mssql-server-linux:latest
+          #          image: microsoft/mssql-server-linux:2017-GA
+          imagePullPolicy: Always
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              value: "<mypassword>"
+          ports:
+            - containerPort: 1433
+          volumeMounts:
+            - name: mssqldb-volume-2
+              mountPath: /var/opt/mssql
+          resources:
+            requests:
+              memory: 2Gi
+      volumes:
+        - name: mssqldb-volume-2
+          emptyDir: {}
+---
+# ===========================
+# AGENT 3
+# ===========================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-teamcity-agent-3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-teamcity-agent-3
+  template:
+    metadata:
+      labels:
+        app: example-teamcity-agent-3
+        teamcity: agent
+        agentGroup: three
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: agentGroup
+                      operator: In
+                      values:
+                        - three
+                topologyKey: kubernetes.io/hostname
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: teamcity
+                    operator: In
+                    values:
+                      - server
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: example-teamcity-agent-3
+          image: exampleregistry.azurecr.io/teamcity_agent:abcdef01
+          imagePullPolicy: Always
+          env:
+            # TODO: These should be handled in a more kubernetes-style way
+            # https://kubernetes.io/docs/concepts/services-networking/service/#environment-variables
+            # (e.g. at TEAMCITY_MSSQL_SERVICE_1_SERVICE_HOST)
+            - name: DBHOST_OVERRIDE
+              value: "teamcity-mssql-service-3.default,1433"
+            - name: SERVER_URL
+              value: http://teamcity-web-service-internal.default:8111
+            - name: MSSQL_URL
+              value: "teamcity-mssql-service-3.default,1433"
+            - name: AGENT_NAME
+              value: agent_3
+            - name: ACCEPT_EULA
+              value: "Y"
+          volumeMounts:
+            - name: teamcity-agent3-volume
+              mountPath: /data/teamcity_agent/conf
+      volumes:
+        - name: teamcity-agent3-volume
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-teamcity-mssql-3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-teamcity-mssql-3
+  template:
+    metadata:
+      labels:
+        app: example-teamcity-mssql-3
+        teamcity: mssql
+        agentGroup: three
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: agentGroup
+                      operator: In
+                      values:
+                        - three
+                topologyKey: kubernetes.io/hostname
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: teamcity
+                    operator: In
+                    values:
+                      - server
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: example-teamcity-mssql-3
+          image: microsoft/mssql-server-linux:latest
+          imagePullPolicy: Always
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              value: "<mypassword>"
+          ports:
+            - containerPort: 1433
+          volumeMounts:
+            - name: mssqldb-volume-3
+              mountPath: /var/opt/mssql
+          resources:
+            requests:
+              memory: 2Gi
+      volumes:
+        - name: mssqldb-volume-3
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity-web-service
+spec:
+  selector:
+    app: example-teamcity-server
+  type: LoadBalancer
+  loadBalancerIP: <my-external-ip>
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8111
+  loadBalancerSourceRanges:
+    # Limit access to my-client-ip
+    - <my-client-ip>/32 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity-web-service-internal
+spec:
+  selector:
+    app: example-teamcity-server
+  ports:
+    - protocol: TCP
+      port: 8111
+      targetPort: 8111
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity-mssql-service-1
+spec:
+  selector:
+    app: example-teamcity-mssql-1
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity-mssql-service-2
+spec:
+  selector:
+    app: example-teamcity-mssql-2
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity-mssql-service-3
+spec:
+  selector:
+    app: example-teamcity-mssql-3
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433

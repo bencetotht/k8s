@@ -1,0 +1,63 @@
+# global:
+#   edition: ce
+#   hosts:
+#     domain: xip.io
+#     https: true
+#     externalIP: 192.168.50.160
+#     ssh: ~
+#     gitlab:
+#       name: gitlab.xip.io 
+#       https: true
+#     registry:
+#       name: gitlab-registry.xip.io
+#       https: true
+#     minio:
+#       name: gitlab-minio.xip.io
+#       https: true
+#   minio:
+#     enabled: true
+#   ingress:
+#     configureCertmanager: false
+#     class: "nginx"
+#     enabled: false
+#     tls:
+#       enabled: false
+# certmanager:
+#   install: false
+# nginx-ingress:
+#   enabled: false
+# prometheus:
+#   install: true
+# redis:
+#   install: true
+# postgresql:
+#   install: true
+# gitlab-runner:
+#   install: true
+# registry:
+#   enable: true
+
+global:
+  edition: ce
+  hosts:
+    domain: example.com
+    externalIP: 192.168.50.160
+  ssh: ~
+  ingress:
+    enabled: false
+    configureCertmanager: false
+    provider: "traefik"
+postgresql:
+  image:
+    tag: 13.6.0
+ingress:
+  enabled: false
+  configureCertmanager: false
+certmanager:
+  issuer:
+    email: 
+  install: false
+redis:
+  install: false
+nginx-ingress:
+  enabled: false

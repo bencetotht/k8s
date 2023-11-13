@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teamcity-se
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teamcity-se
+  template:
+    metadata:
+      labels:
+        app: teamcity-se
+    spec:
+      containers:
+      - name: teamcity-se
+        image: jetbrains/teamcity-server
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "2048Mi"
+        # env:
+        # - name: TEAMCITY_SERVER_MEM_OPTS
+        #   value: "-Xms512m -Xmx2g"
+        ports:
+        - containerPort: 8111
+          name: web
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data/teamcity_server/datadir
+          name: teamcity-se-datadir-mount
+      volumes:
+      - name: teamcity-se-datadir-mount
+        persistentVolumeClaim:
+          claimName: teamcity-se-datadir
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity-web
+spec:
+  type: LoadBalancer
+  selector:
+    app: teamcity-se
+  ports:
+  - port: 8111
+    targetPort: web
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teamcity-se-datadir
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 2Gi
+

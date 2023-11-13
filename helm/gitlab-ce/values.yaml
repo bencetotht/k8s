@@ -1,0 +1,19 @@
+gitlab:
+  global:
+    edition: ce
+    hosts:
+      domain: example.com
+      externalIP: 192.168.50.160
+  certmanager-issuer:
+    email: ""
+  postgresql:
+    image:
+      tag: 13.6.0
+  ingress:
+    enabled: false
+    configureCertmanager: false
+  certmanager:
+    issuer:
+      email: 
+    install: false
+

@@ -11,5 +11,5 @@ loki:
 singleBinary:
   replicas: 1
 versions:
-  handle_tag: latest
+  handle_tag: 3
   web_tag: latest

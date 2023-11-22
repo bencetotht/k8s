@@ -1,0 +1,15 @@
+installCRDs: true
+dashboard:
+  enabled: true
+  service:
+    type: LoadBalancer
+controller:
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8090"
+  metrics: 
+    enabled: true
+  serviceMonitor: 
+    enabled: true
+    namespace: "monitoring"

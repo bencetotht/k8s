@@ -1,0 +1,25 @@
+global:
+  edition: ce
+  hosts:
+    domain: gitlab.local
+    externalIP: 192.168.50.160
+  ssh: ~
+  ingress:
+    enabled: false
+    configureCertmanager: false
+    provider: "traefik"
+  certmanager:
+    install: false
+  certmanager-issuer:
+    email: "me@example.com"
+  redis:
+    install: false
+  nginx-ingress:
+    enabled: false
+  postgresql: 
+    persitence:
+      storageClass: nfs
+  minio:
+    enabled: false
+    persitence:
+      storageClass: nfs

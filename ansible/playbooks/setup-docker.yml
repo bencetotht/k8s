@@ -1,0 +1,12 @@
+- hosts: '*'
+  become: yes
+  tasks:
+    - name: install docker, docker-compose
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose
+        update_cache: true
+    - name: add user permissions
+      ansible.builtin.command:
+        usermod -aG docker $USER

@@ -1,0 +1,75 @@
+- hosts: "*"
+  vars:
+    secure_install: false
+    proxmox_install: false
+  become: yes
+  tasks:
+    - name: APT Init
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: yes
+    - name: Install default tools
+      ansible.builtin.apt:
+        name:
+          - vim
+          - unattended-upgrades
+          - openssh-server
+        state: latest
+    - name: reconfigure unattended-upgrades
+      ansible.builtin.debconf:
+        name: unattended-upgrades
+        question: unattended-upgrades/priority
+        value: low
+        vtype: string
+    - name: disable automatic reboots for unattended-upgrades
+      ansible.builtin.command: sudo sed -i 's/\/\/Unattended-Upgrade::Automatic-Reboot "false";/Unattended-Upgrade::Automatic-Reboot "false";/' /etc/apt/apt.conf.d/50unattended-upgrades
+    - name: copy ssh key
+      ansible.posix.authorized_key:
+        user: bence
+        state: present
+        key: "{{ lookup('file', '../templates/id_rsa.pub') }}"
+    - name: set ssh auth to key based
+      become_user: root
+      ansible.builtin.command:
+        sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+      when: secure_install
+    - name: set timezone to Europe/Budapest
+      become_user: root
+      ansible.builtin.command:
+        timedatectl set-timezone Europe/Budapest
+    - name: setup proxmox kvm agent
+      ansible.builtin.apt:
+        name: qemu-guest-agent
+        state: latest
+      when: proxmox_install
+    - name: setup security packages - ufw, fail2ban
+      ansible.builtin.apt:
+        name:
+          - ufw
+          - fail2ban
+        state: latest
+      when: secure_install
+    - name: setup basic firewall - allow ssh
+      ansible.builtin.ufw:
+        rule: allow
+        port: ssh
+      when: secure_install
+    - name: setup basic firewall - allow outgoing
+      ansible.builtin.ufw:
+        rule: allow
+        direction: out
+      when: secure_install
+    - name: setup basic firewall - deny incoming
+      ansible.builtin.ufw:
+        rule: deny
+        direction: in
+      when: secure_install
+    - name: setup basic firewall - enable ufw
+      ansible.builtin.ufw:
+        state: enabled
+      when: secure_install
+    - name: configure fail2ban
+      become_user: root
+      ansible.builtin.command:
+        cp /etc/fail2ban/fail2ban.{conf,local}; cp /etc/fail2ban/jail.{conf,local
+      when: secure_install

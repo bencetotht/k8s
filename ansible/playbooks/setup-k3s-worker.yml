@@ -1,0 +1,19 @@
+- hosts: 'worker'
+  become: yes
+  environment:
+    TOKEN: ''
+  tasks:
+    - name: install docker, docker-compose
+      become_user: root
+      ansible.builtin.command:
+        curl -sfL https://get.k3s.io | K3S_TOKEN=$TOKEN sh -
+    - name: change k3s mod
+      become_user: root
+      ansible.builtin.command:
+        chmod 644 /etc/rancher/k3s/k3s.yaml
+    - name: install utilities
+      become_user: root
+      ansible.builtin.apt:
+        name:
+          - nfs-common
+        update_cache: yes

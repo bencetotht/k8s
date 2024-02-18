@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    command:
+      - "--log.level=DEBUG"
+      - "--api=true"
+      - "--api.insecure=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.traefik.address=:8080"
+      - "--providers.file.filename=/traefik-conf.yml"
+      - "--providers.file.watch=true"
+      ### FOR RUNNING IN DOCKER STACK ###
+      # - "--providers.docker=true"
+      # - "--providers.docker.exposedbydefault=false"
+      ###
+    volumes:
+      - "./conf/traefik-conf.yml:/traefik-conf.yml"
+      ### FOR RUNNING IN DOCKER STACK ###
+      # - "/var/run/docker.sock:/var/run/docker.sock:ro" 
+      ###

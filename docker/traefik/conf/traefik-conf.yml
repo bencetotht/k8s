@@ -1,0 +1,29 @@
+http:
+  routers:
+    router0:
+      entrypoints:
+        - web
+        - websecure
+      service: example-service
+      rule: Host(`your.domain.example`)
+  services:
+    example-service:
+      loadBalancer:
+        servers:
+          - url: http://google.com/
+        passHostHeader: false
+tcp:
+  routers:
+    router1:
+      entrypoints:
+        - web
+      rule: "HostSNI(`your.domain.example`)"
+      service: example-service
+      tls: {}
+
+  services:
+    example-service:
+      loadbalancer:
+        servers:
+          - "10.10.10.173:25565"
+          - "10.10.10.174:25565"

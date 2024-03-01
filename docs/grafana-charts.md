@@ -6,3 +6,4 @@
 |RabbitMQ-Overview|`10991`|https://grafana.com/grafana/dashboards/10991-rabbitmq-overview/|
 |Traefik|`4475`|https://grafana.com/grafana/dashboards/4475-traefik/|
 |NodeJS Prometheus Dashboard|`11159`|https://grafana.com/grafana/dashboards/11159-nodejs-application-dashboard/|
+|Consul Dashboard|`13396`|https://grafana.com/grafana/dashboards/13396-consul-server-monitoring/|

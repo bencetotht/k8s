@@ -3,13 +3,28 @@ global:
   #   enabled: true
   tls:
     enabled: true
+  metrics:
+    enabled: true
+    enableAgentMetrics: true
 
 server:
   replicas: 1
   bootstrapExpect: 1
   extraConfig: |
     {
-      "log_level": "TRACE"
+      "log_level": "TRACE",
+      "telemetry": {
+        "disable_hostname": true
+      }
+    }
+
+client:
+  extraConfig: |
+    {
+      "log_level": "TRACE",
+      "telemetry": {
+        "disable_hostname": true
+      }
     }
 
 connectInject:

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shlink
+spec:
+  selector:
+    matchLabels:
+      app: shlink
+  template:
+    metadata:
+      labels:
+        app: shlink
+    spec:
+      containers:
+      - name: shlink
+        image: shlinkio/shlink:stable
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+          name: shlink-port
+        env: 
+        - name: TZ
+          value: {{.Values.shlink.TZ}}
+        - name: GEOLITE_LICENSE_KEY
+          value: {{.Values.shlink.GEOLITE_LICENSE_KEY}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shlink-service
+spec:
+  selector:
+    app: shlink
+  ports:
+  - port: 8080
+    targetPort: shlink-port
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shlink
+  labels:
+    name: shlink
+spec:
+  rules:
+  - host: {{.Values.shlink.domain}}
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: shlink-service
+            port: 
+              number: 8080

@@ -1,0 +1,8 @@
+global:
+  storageClassName: "longhorn"
+shlink:
+  domain: "your.example.domain"
+  TZ: "Europe/Budapest"
+  GEOLITE_LICENSE_KEY: $MAXMIND_API
+db:
+  replicas: 1

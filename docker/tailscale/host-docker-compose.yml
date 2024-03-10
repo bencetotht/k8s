@@ -16,9 +16,9 @@ services:
         - sys_module
       restart: unless-stopped
       ### UNCOMMENT IF DEDICATED NETWORK
-      networks:
-        server_stack:
-          ipv4_address: 10.0.0.1
+      # networks:
+      #   server_stack:
+      #     ipv4_address: 10.0.0.1
       ###
 ### UNCOMMENT IF DEDICATED NETWORK
 # networks:

@@ -1,0 +1,69 @@
+version: "3"
+
+services:
+  shlink:
+    image: shlinkio/shlink:stable
+    restart: always
+    container_name: shlink-backend
+    environment:
+      - DEFAULT_DOMAIN=<YOUR.DOMAIN:8080>
+      - TZ="Europe/Budapest"
+      - IS_HTTPS_ENABLED=false
+      - GEOLITE_LICENSE_KEY=<MAXMIND_API> # FILL IN YOUR OWN KEY
+      - DB_DRIVER=maria
+      - DB_USER=shlink
+      - DB_NAME=shlink
+      - DB_PASSWORD=password
+      - DB_HOST=database
+    depends_on:
+      - database
+      - traefik
+    # ports:
+    #   - 8987:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shlink-router.rule=Host(`link.bnbdevelopment.cloud`)"
+      - "traefik.http.services.shlink-service.loadbalancer.server.port=8080"
+
+  database:
+    image: mariadb:10.8
+    restart: always
+    container_name: shlink-database
+    environment:
+      - MARIADB_ROOT_PASSWORD=password
+      - MARIADB_DATABASE=shlink
+      - MARIADB_USER=shlink
+      - MARIADB_PASSWORD=password
+    volumes:
+      - ./database:/var/lib/mysql
+
+  shlink-web-client:
+    image: shlinkio/shlink-web-client
+    restart: always
+    container_name: shlink-gui
+    volumes:
+      - ./shlink/servers.json:/usr/share/nginx/html/servers.json
+    depends_on:
+      - shlink
+      - traefik
+    ports:
+      - 8081:8080
+  
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" ###ONLY FOR DEVELOPMENT
+    command:
+      - "--log.level=DEBUG"
+      - "--api=true"
+      - "--api.insecure=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.traefik.address=:8080" ###ONLY FOR DEVELOPMENT
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"

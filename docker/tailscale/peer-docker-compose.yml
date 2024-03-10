@@ -1,3 +1,6 @@
+#############
+# TODO CANT ACCESS CLIENTS, NEED TO FIX LATER
+#############
 version: "3.7"
 services:
   tailscale:

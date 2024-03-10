@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  replicas: {{ .Values.db.replicas }}
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      volumes: 
+      - name: mariadb-sql
+        persistentVolumeClaim:
+          claimName: mariadb-volume
+      containers:
+      - name: mariadb
+        image: mariadb:10.8
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3306
+          name: database-port
+        volumeMounts:
+        - name: mariadb-sql
+          mountPath: /var/lib/mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-service
+spec:
+  selector:
+    app: mariadb
+  ports:
+  - port: 3306
+    targetPort: database-port
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-volume
+spec:
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: {{.Values.global.storageClassName}}
+  accessModes:
+    - ReadWriteMany
+
+

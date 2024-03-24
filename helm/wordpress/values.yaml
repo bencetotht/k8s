@@ -1,0 +1,18 @@
+global:
+  storageClass: longhorn
+wordpressUsername: admin
+wordpressPassword: admin
+wordpressConfigureCache: true
+replicaCount: 2
+updateStrategy:
+  type: RollingUpdate
+service:
+  type: ClusterIP
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteMany
+metrics:
+  enabled: true
+mariadb:
+  architecture: standalone ### standalone or replication

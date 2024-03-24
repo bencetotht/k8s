@@ -1,0 +1,30 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/service-widgets
+
+- greeting:
+    text_size: xl
+    text: Welcome back, Bence
+- resources:
+    cpu: true
+    memory: true
+
+- longhorn:
+    expanded: true
+    total: true
+
+- openmeteo:
+    label: Szombathely
+    latitude: 47.23178393659897
+    longitude: 16.623986152583047
+    timezone: Europe/Budapest
+    units: metric
+    cache: 10
+    format:
+      maximumFractionDigits: 1
+
+- datetime:
+    text_size: xl
+    format:
+        timeStyle: short
+        hourCycle: h23

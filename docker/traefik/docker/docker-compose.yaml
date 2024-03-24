@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" ###ONLY FOR DEVELOPMENT
+    command:
+      - "--log.level=DEBUG"
+      - "--api=true"
+      - "--api.insecure=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.traefik.address=:8080" ###ONLY FOR DEVELOPMENT
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.10.0.0/24"

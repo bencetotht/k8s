@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  minecraft:
+    image: "marctv/minecraft-papermc-server:latest"
+    restart: always
+    container_name: "server"
+    environment:
+      MEMORYSIZE: "10G"
+      PAPERMC_FLAGS: ""
+      TZ: Europe/Budapest
+    volumes:
+      - "./server:/data:rw"
+    ports:
+      - "25565:25565"
+    #labels:
+    stdin_open: true
+    tty: true
+    networks:
+      server_stack:
+        ipv4_address: 10.0.0.5
+  tailscale:
+      image: "tailscale/tailscale:latest"
+      container_name: "tailscale"
+      hostname: "host"
+      environment:
+        - TS_AUTHKEY=$TS_AUTH_KEY
+        - TS_STATE_DIR=/var/lib/tailscale
+        - TS_ROUTES=10.0.0.0/24
+      volumes:
+        - "./tailscale/state:/var/lib/tailscale"
+        - "/dev/net/tun:/dev/net/tun"
+      cap_add:
+        - net_admin
+        - sys_module
+      restart: unless-stopped
+      networks:
+        server_stack:
+          ipv4_address: 10.0.0.10
+
+networks:
+  server_stack:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.0.0.0/24"

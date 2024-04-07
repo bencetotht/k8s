@@ -1,0 +1,11 @@
+auth:
+  admin:
+    username: admin
+    password: admin
+influxdb:
+  service:
+    type: < LoadBalancer | ClusterIP >
+metrics:
+  enabled: true
+persistence:
+  storageClass: longhorn

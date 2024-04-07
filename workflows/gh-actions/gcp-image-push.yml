@@ -39,12 +39,12 @@ jobs:
         docker push europe-west3-docker.pkg.dev/$PROJECT_ID/ARTIFACT_REPO/$IMAGE_NAME:latest
         docker push europe-west3-docker.pkg.dev/$PROJECT_ID/ARTIFACT_REPO/$IMAGE_NAME:$GIT_TAG
 
-    - name: Change Chart values
-      run: |
-        cd diretory/deployment
-        sed 's/handle_tag: .*/handle_tag: '${{ github.run_number }}'/' values.yaml > temp.yaml && mv temp.yaml values.yaml
-        git config --global user.name 'GitHub Actions'
-        git config --global user.email 'actions@github.com'
-        git add values.yaml
-        git commit -m "Change release tag in values.yaml"
-        git push
+    # - name: Change Chart values
+    #   run: |
+    #     cd diretory/deployment
+    #     sed 's/handle_tag: .*/handle_tag: '${{ github.run_number }}'/' values.yaml > temp.yaml && mv temp.yaml values.yaml
+    #     git config --global user.name 'GitHub Actions'
+    #     git config --global user.email 'actions@github.com'
+    #     git add values.yaml
+    #     git commit -m "Change release tag in values.yaml"
+    #     git push

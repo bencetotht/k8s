@@ -1,0 +1,10 @@
+- hosts: vpn
+  become: yes
+  tasks:
+    - name: check if wg1 is up and running
+      command: ip link show wg1 up
+      register: wg1_status
+      ignore_errors: yes
+    - name: start wg1 
+      command: wg-quick up wg1
+      when: wg1_status.rc != 0

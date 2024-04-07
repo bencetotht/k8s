@@ -1,0 +1,9 @@
+---
+all:
+  children:
+    vpn:
+      hosts:
+        pve1-wg:
+          ansible_host: 10.10.10.109
+        pve2-wg:
+          ansible_host: 10.10.20.205

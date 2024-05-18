@@ -5,6 +5,7 @@ metadata:
   labels:
     app: nginx
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: nginx
@@ -13,36 +14,55 @@ spec:
       labels:
         app: nginx
     spec:
+      volumes:
+      - name: nginx-volume
+        persistentVolumeClaim:
+          claimName: backup-test-pvc
       containers:
         - name: nginx
           image: nginx
           ports:
             - containerPort: 8000
+          volumeMounts:
+          - name: nginx-volume
+            mountPath: /share
 ---
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: nginx-service
+  name: backup-test-pvc
 spec:
-  selector:
-    app: nginx
-  ports:
-  - port: 8000
-    targetPort: 8000
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: nginx-ingress
-  labels:
-    name: nginx-ingress
-spec:
-  rules:
-  - http:
-      paths:
-      - path: "/"
-        backend:
-          service:
-            name: nginx-service
-            port: 
-              number: 80
+  accessModes:
+  - ReadWriteMany
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 1Gi
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: nginx-service
+# spec:
+#   selector:
+#     app: nginx
+#   ports:
+#   - port: 8000
+#     targetPort: 8000
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: nginx-ingress
+#   labels:
+#     name: nginx-ingress
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - path: "/"
+#         backend:
+#           service:
+#             name: nginx-service
+#             port: 
+#               number: 80

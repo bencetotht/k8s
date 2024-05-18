@@ -1,0 +1,8 @@
+- name: Deploy Traefik Chart
+  ansible.builtin.template:
+    src: templates/traefik.j2
+    dest: /var/lib/rancher/rke2/server/manifests/traefik.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname == groups['servers'][0]

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-ss
+spec:
+  selector:
+    matchLabels:
+      app: ngxinx
+  serviceName: nginx-svc
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: ngxinx
+    spec:
+      containers:
+      - name: ngxinx
+        image: registry.k8s.io/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: backuptest
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      resources:
+        requests:
+          storage: 1Gi

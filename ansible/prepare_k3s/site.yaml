@@ -1,0 +1,17 @@
+- name: Prepare all nodes
+  hosts: servers,agents
+  gather_facts: true
+  roles:
+    - prepare-nodes
+
+- name: Deploy loadbalancers
+  hosts: loadbalancers
+  gather_facts: true
+  roles:
+    - setup-loadbalancers
+
+- name: Install K3S on all nodes
+  hosts: servers,agents
+  gather_facts: true
+  roles:
+    - install-k3s

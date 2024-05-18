@@ -1,0 +1,59 @@
+---
+- name: Update and upgrade system
+  ansible.builtin.apt:
+    upgrade: yes
+    update_cache: true
+
+- name: Install keepalived and HAProxy
+  ansible.builtin.apt:
+    pkg:
+      - keepalived
+      - haproxy
+
+- name: Create directory for HAProxy
+  ansible.builtin.file:
+    path: "/etc/haproxy"
+    state: directory
+    mode: '0644'
+
+- name: Create directory for keepalived
+  ansible.builtin.file:
+    path: "/etc/keepalived"
+    state: directory
+    mode: '0644'
+
+- name: Deploy HAProxy configuration
+  ansible.builtin.template:
+    src: templates/haproxy.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Deploy keepalived master configuration
+  ansible.builtin.template:
+    src: templates/keepalived-master.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname == 'lb1'
+
+- name: Deploy keepalived backup configuration
+  ansible.builtin.template:
+    src: templates/keepalived-backup.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname == 'lb2'
+
+- name: Restart HAProxy
+  service:
+    name: haproxy
+    state: restarted
+
+- name: Restart keepalived
+  service:
+    name: keepalived
+    state: restarted

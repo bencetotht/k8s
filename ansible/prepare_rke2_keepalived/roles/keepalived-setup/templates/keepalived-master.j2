@@ -1,0 +1,22 @@
+vrrp_instance VI_1 {
+  state MASTER
+  interface {{ vip_interface }}
+  virtual_router_id 55
+  priority 150
+  advert_int 1
+  unicast_src_ip {{ keepalived_master }}
+  unicast_peer {
+  {% for ip in keepalived_backup %}
+    {{ ip }}
+  {% endfor %}
+  }
+
+  authentication {
+    auth_type PASS
+    auth_pass C3P9K9gc
+  }
+
+  virtual_ipaddress {
+    {{ vip }}/24
+  }
+}

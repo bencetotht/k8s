@@ -1,0 +1,104 @@
+- name: Create directory for RKE2 config
+  ansible.builtin.file:
+    path: "/etc/rancher/rke2"
+    state: directory
+    mode: '0644'
+
+- name: Create directory for RKE2 token
+  ansible.builtin.file:
+    path: "/var/lib/rancher/rke2/server"
+    state: directory
+    mode: '0644'
+
+- name: Deploy RKE2 load balanced server Configuration
+  ansible.builtin.template:
+    src: templates/rke2-lb-server-config.j2
+    dest: /etc/rancher/rke2/config.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname in groups['servers']
+
+- name: Deploy RKE2 main server Configuration
+  ansible.builtin.template:
+    src: templates/rke2-server-config.j2
+    dest: /etc/rancher/rke2/config.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname in groups['servers'][0]
+
+- name: Deploy RKE2 agent Configuration
+  ansible.builtin.template:
+    src: templates/rke2-agent-config.j2
+    dest: /etc/rancher/rke2/config.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname in groups['agents']
+
+- name: Download RKE2 binary on servers
+  shell: "curl -sfL https://get.rke2.io | sh -"
+  when: inventory_hostname in groups['servers']
+
+- name: Download RKE2 binary on agents
+  shell: 'curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -'
+  when: inventory_hostname in groups['agents']
+
+- name: Enable RKE2 on main server
+  service:
+    name: rke2-server.service
+    enabled: yes
+  when: inventory_hostname in groups['servers'][0]
+
+- name: Start RKE2 on main server
+  service:
+    name: rke2-server.service
+    state: started
+  when: inventory_hostname in groups['servers'][0]
+
+- name: Wait for node-token
+  ansible.builtin.wait_for:
+    path: /var/lib/rancher/rke2/server/node-token
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Stop RKE2 on main server
+  service:
+    name: rke2-server.service
+    state: stopped
+  when: inventory_hostname in groups['servers'][0]
+
+- name: Register node-token file access mode
+  ansible.builtin.stat:
+    path: /var/lib/rancher/rke2/server
+  register: p
+
+- name: Change file access for node-token
+  ansible.builtin.file:
+    path: /var/lib/rancher/rke2/server
+    mode: "g+rx,o+rx"
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Fetch the token from the first server node
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/rke2/server/token
+  register: rke2_token
+  when: inventory_hostname == groups['servers'][0]
+  run_once: true
+
+- name: Save Master node-token for later
+  ansible.builtin.set_fact:
+    token: "{{ rke2_token.content | b64decode | regex_replace('\n', '') }}"
+
+- name: Restore node-token file access
+  ansible.builtin.file:
+    path: /var/lib/rancher/rke2/server
+    mode: "{{ p.stat.mode }}"
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Replace tokens in nodes
+  lineinfile:
+    path: /etc/rancher/rke2/config.yaml
+    regexp: '^token:\s*""$'
+    line: "token: {{ hostvars['server1']['token'] }}"
+  when: inventory_hostname != 'server1'

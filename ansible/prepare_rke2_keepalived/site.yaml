@@ -1,0 +1,29 @@
+- name: Prepare all nodes
+  hosts: servers,agents
+  gather_facts: true
+  roles:
+    - prepare-nodes
+
+# - name: Deploy Kube VIP
+#   hosts: servers
+#   gather_facts: true
+#   roles:
+#     - kube-vip
+
+# - name: Deploy Traefik
+#   hosts: servers
+#   gather_facts: true
+#   roles:
+#     - traefik
+
+- name: Install and configure keeplalived
+  hosts: servers
+  gather_facts: true
+  roles:
+    - keepalived-setup
+
+- name: Prepare RKE2 on Servers and Agents
+  hosts: servers,agents
+  gather_facts: true
+  roles:
+    - rke2-prepare

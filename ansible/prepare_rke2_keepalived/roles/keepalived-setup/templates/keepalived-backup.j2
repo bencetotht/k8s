@@ -1,0 +1,22 @@
+vrrp_instance VI_1 {
+  state BACKUP
+  interface {{ vip_interface }}
+  virtual_router_id 55
+  priority 100
+  advert_int 1
+  unicast_src_ip 192.168.30.32
+  unicast_peer {
+{% for host in hostvars %}
+    {{ hostvars[host]['ansible_host'] }}
+{% endfor %}
+  }
+
+  authentication {
+    auth_type PASS
+    auth_pass C3P9K9gc
+  }
+
+  virtual_ipaddress {
+    {{vip}}/24
+  }
+}

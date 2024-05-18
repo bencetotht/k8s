@@ -1,0 +1,11 @@
+write-kubeconfig-mode: "0644"
+tls-san:
+  - {{ vip }}
+{% for host in hostvars %}
+  - {{ hostvars[host]['ansible_host'] }}
+{% endfor %}
+node-label:
+  - server=true
+disable:
+  - rke2-ingress-nginx
+serviceLB: true

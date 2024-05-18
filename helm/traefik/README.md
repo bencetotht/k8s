@@ -5,3 +5,6 @@ htpasswd -nb <USERNAME> password | openssl base64
 ```
 
 - Replace `USERNAME` with actual username
+
+---
+https://technotim.live/posts/kube-traefik-cert-manager-le/

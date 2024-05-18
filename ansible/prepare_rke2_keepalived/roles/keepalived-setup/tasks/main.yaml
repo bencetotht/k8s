@@ -1,0 +1,31 @@
+- name: Install keepalived
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: yes
+    pkg:
+      - keepalived
+      - libipset13
+
+- name: Create directory for keepalived config
+  ansible.builtin.file:
+    path: "/etc/keepalived/keepalived"
+    state: directory
+    mode: '0644'
+
+- name: Config main server
+  ansible.builtin.template:
+    src: templates/keepalived-master.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Config backup server
+  ansible.builtin.template:
+    src: templates/keepalived-backup.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname != 'server1'

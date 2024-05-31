@@ -10,6 +10,7 @@
       - vim
       - qemu-guest-agent
       - iptables
+      - nfs-common
 
 # - name: Enable IPv4 forwarding
 #   ansible.posix.sysctl:

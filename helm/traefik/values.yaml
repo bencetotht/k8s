@@ -14,18 +14,20 @@ deployment:
   additionalContainers: []
   initContainers: []
 
-ports:
-  web:
-    redirectTo:
-      port: websecure
-      priority: 10
-  websecure:
-    tls:
-      enabled: true
-      
+# ports:
+  # web:
+  #   forwardedHeaders:
+  #     insecure: true
+  #   redirectTo:
+  #     port: websecure
+  #     priority: 10
+#   websecure:
+#     tls:
+#       enabled: true
+
 ingressRoute:
   dashboard:
-    enabled: false
+    enabled: true
 
 providers:
   kubernetesCRD:

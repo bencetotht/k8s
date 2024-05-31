@@ -16,3 +16,6 @@ stringData:
 - be sure you are generating an API token and not a global API key https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
 ## Certificates
 - the certificates namespace **must be** the same as the ingress
+
+---
+https://technotim.live/posts/kube-traefik-cert-manager-le/

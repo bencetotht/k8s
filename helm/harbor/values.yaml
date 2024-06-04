@@ -1,0 +1,16 @@
+expose:
+  type: ingress
+  ingress:
+    hosts:
+      core: reg.bnbdevelopment.cloud
+persistence:
+  persistentVolumeClaim:
+    registry:
+      storageClass: longhorn
+      accessMode: ReadWriteMany
+    chartmuseum:
+      storageClass: longhorn
+      accessMode: ReadWriteMany
+    jobservice:
+      storageClass: longhorn
+      accessMode: ReadWriteMany

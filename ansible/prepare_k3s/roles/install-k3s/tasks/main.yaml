@@ -12,12 +12,12 @@
 
 - name: Run k3s executable on main server
   ansible.builtin.debug: 
-    msg: 'curl -sfL https://get.k3s.io | K3S_TOKEN={{ TOKEN }} sh -s - server --cluster-init --tls-san={{ vip }} --disable=servicelb --disable=traefik'
+    msg: 'curl -sfL https://get.k3s.io | K3S_TOKEN={{ TOKEN }} sh -s - server --cluster-init --tls-san={{ vip }} --disable=servicelb --disable=traefik --disable local-storage'
   when: inventory_hostname == 'server1'
 
 - name: Run k3s executable on other servers
   ansible.builtin.debug: 
-    msg: "curl -sfL https://get.k3s.io | K3S_TOKEN={{ TOKEN }} sh -s - server --server https://{{ hostvars['server1']['ansible_host'] }}:6443 --tls-san={{ vip }} --disable=servicelb --disable=traefik"
+    msg: "curl -sfL https://get.k3s.io | K3S_TOKEN={{ TOKEN }} sh -s - server --server https://{{ hostvars['server1']['ansible_host'] }}:6443 --tls-san={{ vip }} --disable=servicelb --disable=traefik --disable local-storage"
   when: inventory_hostname != 'server1' and inventory_hostname in groups['servers']
 
 - name: Install k3s on agents

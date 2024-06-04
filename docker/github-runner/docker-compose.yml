@@ -6,7 +6,7 @@ services:
     environment:
       RUNNER_NAME: "ga-dr-1"
       RUNNER_REPOSITORY_URL: "https://github.com/ForThisPlayer10/app-for-ci-cd"
-      RUNNER_TOKEN: "AIXB2E4AQQN4J2ZKOOMW7PDDJRKQS"
+      RUNNER_TOKEN: $RUNNER_TOKEN
     networks:
       cicd:
         ipv4_address: 172.20.0.10

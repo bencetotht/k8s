@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - 'alertmanager:9093'
+
+rule_files:
+  - /etc/prometheus/alert.rules
+
+scrape_configs:
+  - job_name: 'nut-exporter'
+    honor_timestamps: true
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets: ['x.x.x.x:3493'] # IP of the NUT server
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: nut-exporter:9995

@@ -1,0 +1,27 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'slack-receiver'
+
+receivers:
+- name: slack-receiver
+  slack_configs:
+  - api_url: ""
+    channel: "#home"
+    send_resolved: true
+    text: >-
+        {{ range .Alerts -}}
+        *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+        *Description:* {{ .Annotations.description }}
+        *Details:*
+          {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+          {{ end }}
+        {{ end }}
+  # - name: 'email-alert'
+    # email_configs:
+    #   - to: 'your_email@example.com'  # Replace with your email
+    #     from: 'alertmanager@example.com'  # Replace with sender email
+    #     smarthost: 'smtp.example.com:587'  # Replace with your SMTP server details
+    #     auth_username: 'smtp_user'  # Replace with SMTP username
+    #     auth_password: 'smtp_password'  # Replace with SMTP password

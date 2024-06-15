@@ -10,3 +10,4 @@
 |Longhorn Dashboard|`17626`|https://grafana.com/grafana/dashboards/17626-longhorn-example-v1-4-0/|
 |MongoDB Dashboard|`2583`|https://grafana.com/grafana/dashboards/2583-mongodb/
 |Proxmox Dashboard|`10048`|https://grafana.com/grafana/dashboards/10048-proxmox/|
+|NUT server dashboard|`14371`||

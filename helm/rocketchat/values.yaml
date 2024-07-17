@@ -1,0 +1,20 @@
+mongodb:
+  auth:
+    passwords:
+      - rocketchat
+    rootPassword: rocketchatroot
+host: chat.bnbdevelopment.cloud
+replicaCount: 1
+smtp:
+  enabled: false
+persistence:
+  enabled: true
+  storageClass: longhorn
+ingress:
+  enabled: true
+prometheusScraping:
+  enabled: true
+serviceMonitor:
+  enabled: true
+microservices:
+  enabled: false

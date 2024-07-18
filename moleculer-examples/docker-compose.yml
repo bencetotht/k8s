@@ -45,7 +45,7 @@ services:
       - internal
 
   mongo:
-    image: mongo:4
+    image: mongo:7
     volumes:
       - data:/data/db
     networks:

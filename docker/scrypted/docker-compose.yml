@@ -1,6 +1,6 @@
 services:
   scrypted:
-    image: koush/scrypted
+    image: koush/scrypted:v0.115.34
     environment:
       - SCRYPTED_WEBHOOK_UPDATE_AUTHORIZATION=Bearer SET_THIS_TO_SOME_RANDOM_TEXT
       - SCRYPTED_WEBHOOK_UPDATE=http://localhost:10444/v1/update
@@ -9,6 +9,8 @@ services:
     network_mode: host
     volumes:
       - ./.scrypted/volume:/server/volume
+    ports:
+      - 10443:10443
     logging:
       driver: "json-file"
       options:

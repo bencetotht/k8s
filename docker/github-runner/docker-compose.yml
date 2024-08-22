@@ -2,10 +2,10 @@ version: "3.7"
 
 services:
   runner:
-    image: tcardonne/github-runner:latest
+    image: tcardonne/github-runner:ubuntu-20.04
     environment:
       RUNNER_NAME: "ga-dr-1"
-      RUNNER_REPOSITORY_URL: "https://github.com/ForThisPlayer10/app-for-ci-cd"
+      RUNNER_REPOSITORY_URL: "https://github.com/YOUR/REPOISTORY"
       RUNNER_TOKEN: $RUNNER_TOKEN
     networks:
       cicd:

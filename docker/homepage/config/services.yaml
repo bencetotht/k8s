@@ -5,23 +5,23 @@
 - Hypervisor/Container:
     - Proxmox:
         icon: proxmox.svg
-        href: https://100.93.205.85:8006
+        href: https://x.x.x.x:8006
         description: pve1
         widget:
             type: proxmox
-            url: "https://192.168.88.253:8006"
+            url: "https://x.x.x.x:8006"
             username:  api@pam!homepage
-            password:  50395e20-2825-4328-bfc0-963bb1711b1f
+            password:  $PASS
             node: proxmox
     - Proxmox:
         icon: proxmox.svg
-        href: https://100.114.216.4:8006
+        href: https://x.x.x.x:8006
         description: pve2
         widget:
             type: proxmox
-            url: "https://192.168.88.250:8006"
+            url: "https://x.x.x.x:8006"
             username:  api@pam!homepage
-            password:  50395e20-2825-4328-bfc0-963bb1711b1f
+            password:  $PASS
             node: pve-2
     - Portainer:
         icon: portainer.svg
@@ -31,16 +31,16 @@
             type: portainer
             url: "https://10.10.10.173:9443"
             env: 2
-            key: "ptr_/oVmHXquAdOqK94Sg4kfr4iNnyeeZJCsp7DDGlR9x48="
+            key: $KEY
 - Status:
     - Router:
         icon: "mikrotik.svg"
         description: internal router
         widget: 
             type: mikrotik
-            url: "http://192.168.88.1:8728"
+            url: "http://x.x.x.x:8728"
             username: admin
-            password: admin
+            password: $PASS
     - Uptime Kuma:
         icon: uptime-kuma.svg
         href: "http://uptime.jegyrendszer.local/"
@@ -57,20 +57,20 @@
             type: grafana
             url: "http://grafana.jegyrendszer.local"
             username: admin
-            password: admin
+            password: $PASS
     - Traefik: 
         icon: "traefik.svg"
         description: utilites proxy
         widget:
             type: traefik
-            url: "http://10.10.10.173:8080"
+            url: "http://x.x.x.x:8080"
     - Speed:
         icon: librespeed.svg
-        href: "10.10.10.173:10000"
+        href: "x.x.x.x:y"
         description: internal
         widget:
             type: speedtest
-            url: "http://speedtest-tracker"
+            url: "http://x.x.x.x"
 - Services:
     - Nextcloud:
         icon: "nextcloud.svg"
@@ -85,21 +85,17 @@
         description: internal prometheus
         widget:
             type: prometheus
-            url: http://prometheus.jegyrendszer.local:80
+            url: http://x.x.x.x:80
     - Shlink:
         icon: "shlink.svg"
-        href: "http://10.10.10.173:8888/"
+        href: "http://x.x.x.x:8888/"
     - Minecraft server:
         icon: "minecraft.svg"
         description: papermc
         widget:
             type: minecraft
-            url: udp://mc.bnbdevelopment.cloud:25565
+            url: udp://x.x.x.x:25565
 - Other:
-    - GitLab:
-        icon: gitlab.svg
-        href: https://git.bnbdevelopment.cloud
-        description: source code
     - Jegyrendszer:
         href: https://jegy.bnbdevelopment.cloud
     - Jegyrendszer admin:

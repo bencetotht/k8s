@@ -1,0 +1,31 @@
+mode: standalone # or distributed
+### IF DISTRIBUTED ###
+# statefulset: 
+#   replicaCount: 8
+auth:
+  rootUser: admin
+  rootPassword: adminadmin # min 8 characters
+defaultBuckets: "" # , separated
+tls:
+  enabled: false
+### INGRESS ###
+# ingress:
+#   enabled: true
+#   hostname: HOSTNAME.LOCAL
+#   path: /
+persistence:
+  enabled: true
+  storageClass: longhorn
+metrics:
+  serviceMonitor:
+    enabled: true  # for prom-operator
+    namespace: monitoring # namespace of prometheus
+  # prometheusRule:
+  #   enabled: true # alerting
+  #   namespace: monitoring
+livenessProbe:
+  enabled: false
+startupProbe:
+  enabled: false
+readinessProbe:
+  enabled: false

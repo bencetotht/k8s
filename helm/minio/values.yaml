@@ -2,6 +2,9 @@ mode: standalone # or distributed
 ### IF DISTRIBUTED ###
 # statefulset: 
 #   replicaCount: 8
+### IMAGE DEBUG ###
+# image:
+#   debug: true
 auth:
   rootUser: admin
   rootPassword: adminadmin # min 8 characters
@@ -29,3 +32,8 @@ startupProbe:
   enabled: false
 readinessProbe:
   enabled: false
+extraEnvVars:
+  - name: MINIO_LOG_LEVEL # debug log level
+    value: DEBUG
+  - name: MINIO_API_ROOT_ACCESS # disable root access - make sure you have an existing user with `consoleAdmin` policy
+    value: off

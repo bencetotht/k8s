@@ -22,7 +22,8 @@ Env variables: `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`, `MINIO_ENDPOINT`
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install awscli
+          sudo apt-get install -y python3-pip
+          pip3 install awscli --upgrade
 
       ### MACOS-LATEST ###
       - name: Install AWS CLI
@@ -38,6 +39,7 @@ Env variables: `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`, `MINIO_ENDPOINT`
           MINIO_BUCKET: BUCKET_NAME
           MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
         run: |
+          aws configure set default.s3.signature_version s3v4
           aws --endpoint-url $MINIO_ENDPOINT s3 cp android/app/build/outputs/apk/release/app-release.apk s3://$MINIO_BUCKET/app-release.apk
 ```
 ## Using Minio Client (mc)

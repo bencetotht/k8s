@@ -1,0 +1,60 @@
+name: "Build Android app"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # macos-latest
+    defaults:
+      run:
+        working-directory: ./app # set accordingly
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          cache: gradle
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Setup Node  
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn' # npm | yarn | pnpm
+
+      - name: Install packages
+        # yarn install | npm install | pnpm install
+        run: |
+             npm i -g corepack
+             yarn install
+
+      # for AAB file use bundleRelease
+      - name: Build application
+        run: |
+             cd android
+             ./gradlew assembleRelease
+
+      # for AAB file: android/app/build/outputs/bundle/release/app-release.aab
+      - name: Upload application
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 3
+
+      - name: Upload APK to server
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          scp -o StrictHostKeyChecking=no app/build/outputs/apk/release/app-release.apk $USERNAME@$HOST:/var/www/html/latest.apk

@@ -16,6 +16,10 @@ tls:
 #   enabled: true
 #   hostname: HOSTNAME.LOCAL
 #   path: /
+### API INGRESS ###
+# apiIngress:
+#   enabled: true
+#   hostname: API.HOSTNAME.LOCAL
 persistence:
   enabled: true
   storageClass: longhorn

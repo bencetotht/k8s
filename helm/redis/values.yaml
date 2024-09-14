@@ -1,0 +1,17 @@
+architecture: standalone # `standalone` or `replication`
+auth:
+  enabled: true
+  password: root
+metrics:
+  enabled: true
+  serviceMonitor: # prom-operator
+    enabled: true
+    namespace: monitoring # namespace of prom operator
+  prometheusRule: # prom-operator
+    enabled: false
+    namespace: monitoring # namespace of prom operator
+replica:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetMemory: 70

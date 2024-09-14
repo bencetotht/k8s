@@ -14,3 +14,4 @@
 |Cloudflare Tunnel Metrics|`17457`|https://grafana.com/grafana/dashboards/17457-cloudflare-tunnels-cloudflared/|
 |MinIO Dashboard| `13502` | https://grafana.com/grafana/dashboards/13502-minio-dashboard/
 |Loki Logs| `13186` | https://grafana.com/grafana/dashboards/13186-loki-dashboard/
+|Redis Metrics| `11835` | https://grafana.com/grafana/dashboards/11835-redis-dashboard-for-prometheus-redis-exporter-helm-stable-redis-ha/

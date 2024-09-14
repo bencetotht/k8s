@@ -12,4 +12,5 @@
 |Proxmox Dashboard|`10048`|https://grafana.com/grafana/dashboards/10048-proxmox/|
 |NUT server dashboard|`14371`|https://grafana.com/grafana/dashboards/14371-nut/|
 |Cloudflare Tunnel Metrics|`17457`|https://grafana.com/grafana/dashboards/17457-cloudflare-tunnels-cloudflared/|
-| MinIO Dashboard | `13502` | https://grafana.com/grafana/dashboards/13502-minio-dashboard/
+|MinIO Dashboard| `13502` | https://grafana.com/grafana/dashboards/13502-minio-dashboard/
+|Loki Logs| `13186` | https://grafana.com/grafana/dashboards/13186-loki-dashboard/

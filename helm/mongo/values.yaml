@@ -1,21 +1,20 @@
-architecture: replicaset
-replicaCount: 2
+architecture: replicaset # `replicaset` or `standalone`
+### ONLY FOR REPLICASET ###
+# replicaCount: 2
 auth:
   enabled: true
   rootUser: root
-  rootPassword: "root"
-image:
-  tag: 4.2.21-debian-10-r8
+  rootPassword: root
 metrics:
   enabled: true
   collector:
     all: true
-  serviceMonitor:
+  serviceMonitor: # prom-operator
     enabled: true
-    namespace: monitoring
-  prometheusRule:
+    namespace: monitoring # namespace of prom operator
+  prometheusRule: # prom-operator
     enabled: false
-    namespace: monitoring
+    namespace: monitoring # namespace of prom operator
 readinessProbe:
   timeoutSeconds: 5
 initdbScripts:

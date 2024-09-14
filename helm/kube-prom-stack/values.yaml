@@ -1,0 +1,31 @@
+alertmanager:
+  config:
+    receivers:
+    - name: slack-receiver
+      slack_configs:
+      - api_url: <SLACK_URI>
+        channel: "#grafana-alerts"
+        send_resolved: true
+        text: >-
+            {{ range .Alerts -}}
+            *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+            *Description:* {{ .Annotations.description }}
+            *Details:*
+              {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+              {{ end }}
+            {{ end }}
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: "longhorn"
+    accessModes:
+      - ReadWriteMany
+    annotations:
+      helm.sh/resource-policy: "keep"
+prometheus:
+  prometheusSpec:
+    scrapeConfigSelector:
+      matchLabels:
+        release: prom
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false

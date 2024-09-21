@@ -17,12 +17,14 @@
     {
       "matchUpdateTypes": ["minor", "patch"],
       "matchCurrentVersion": "!/^0/",
-      "automerge": true
+      "automerge": true,
+      "ignoreTests": true
     },
     {
       "matchDepTypes": ["devDependencies"],
       "matchPackageNames": ["lint", "prettier"],
-      "automerge": true
+      "automerge": true,
+      "ignoreTests": true
     }
   ],
   "lockFileMaintenance": {

@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   openvpn-as:
-    image: ghcr.io/linuxserver/openvpn-as
+    image: ghcr.io/linuxserver/openvpn-as:2.9.0-5c5bd120-Ubuntu18-ls124
     cap_add:
       - NET_ADMIN
     environment:

@@ -1,6 +1,6 @@
 services:
   nut-exporter:
-    image: hon95/prometheus-nut-exporter:1
+    image: hon95/prometheus-nut-exporter:1.2.1
     container_name: nut-exporter
     environment:
       - TZ=Europe/Budapest
@@ -12,7 +12,7 @@ services:
       prometheus:
   
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.53.0
     container_name: prometheus
     volumes:
       - ./data/prometheus:/prometheus
@@ -25,7 +25,7 @@ services:
       prometheus:
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.2.0
     container_name: grafana
     volumes:
       - grafana:/var/lib/grafana
@@ -39,7 +39,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
 
   alertmanager:
-    image: prom/alertmanager:latest
+    image: prom/alertmanager:v0.27.0
     container_name: alertmanager
     volumes:
       - alertmanager_data:/alertmanager

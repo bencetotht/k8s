@@ -1,13 +1,13 @@
 version: '3.7'
 services:
   test-website:
-    image: nginx
+    image: nginx:1.27.1
     networks:
       openvpn-internal:
     expose:
       - 80
   test-website2:
-    image: nginxdemos/hello
+    image: nginxdemos/hello:0.4
     networks:
       openvpn-internal:
     expose:

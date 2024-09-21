@@ -12,5 +12,21 @@
     "renovate"
   ],
   "separateMinorPatch": true,
-  "stopUpdatingLabel": "renovate/stop_updating"
+  "stopUpdatingLabel": "renovate/stop_updating",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchPackageNames": ["lint", "prettier"],
+      "automerge": true
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  }
 }

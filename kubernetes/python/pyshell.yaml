@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pyshell
+  labels:
+    name: pyshell
+spec:
+  containers:
+  - name: pyshell
+    image: python:3.12-slim
+    command: ["sleep", "infinity"]

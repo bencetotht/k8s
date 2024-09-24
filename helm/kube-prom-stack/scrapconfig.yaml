@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: static-config
+  namespace: monitoring
+  labels:
+    prometheus: system-monitoring-prometheus
+    release: prom
+spec:
+  staticConfigs:
+    - labels:
+        job: jobname
+      targets:
+        - 10.10.10.101:9090

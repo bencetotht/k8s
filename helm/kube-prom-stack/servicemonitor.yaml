@@ -1,0 +1,23 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: app-sm
+  namespace: app_namespace
+  labels:
+    release: prom
+    app.kubernetes.io/name: app
+    app.kubernetes.io/instance: app-release
+    prometheus: system-monitoring-prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: app-release
+      app.kubernetes.io/name: app
+  namespaceSelector:
+    matchNames:                                                                                                                                         
+    - app_namespace
+  endpoints:
+    - port: open_port
+      path: /api/v1/metrics
+      interval: 30s

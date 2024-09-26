@@ -25,7 +25,7 @@ services:
       prometheus:
 
   grafana:
-    image: grafana/grafana:11.2.0
+    image: grafana/grafana:11.2.1
     container_name: grafana
     volumes:
       - grafana:/var/lib/grafana

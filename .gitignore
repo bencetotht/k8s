@@ -5,3 +5,6 @@ docker/gitlab-runner/config/config.toml
 *.tgz
 
 id_rsa
+
+.venv/*
+.venv

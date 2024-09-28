@@ -1,5 +1,5 @@
 # changedetector.io - grafana visualizer
-A small Python script that exports information about all active watches on a changedetector.io site into a database, which can be used for visualizations in Grafana. 
+A small Python script that exports information about all active price watches on a changedetector.io site into a database, which can be used for visualizations in Grafana. 
 ## Setup
 A postgres database is necessary to store the price history. You can setup the database using the included dockerfile, and the table using this command:
 ```sql

@@ -69,6 +69,7 @@ def query_chio(name, uuid):
     if r.status_code != 200: print(f"response: {r.text}")
     else:
         filename = r.json()[sorted(r.json())[-1]]
+        if not filename.split('/')[-1].endswith('.txt'): return
         content = open(f'{BASE_DIR}{filename}').read()
         content = json.loads(content)
         insert_doc(name=name, value=content["price"])

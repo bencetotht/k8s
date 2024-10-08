@@ -1,9 +1,18 @@
+logLevel: info
+harborAdminPassword: Harbor12345
 expose:
   type: ingress
   ingress:
     hosts:
       core: reg.bnbdevelopment.cloud
+  tls:
+    enabled: true
+    # secretName: harbor-tls
+    # notary:
+    #   enabled: true
+    #   secretName: harbor-notary-tls
 persistence:
+  enabled: true
   persistentVolumeClaim:
     registry:
       storageClass: longhorn
@@ -14,3 +23,7 @@ persistence:
     jobservice:
       storageClass: longhorn
       accessMode: ReadWriteMany
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true

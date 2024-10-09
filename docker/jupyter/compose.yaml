@@ -8,7 +8,6 @@ services:
       - ./notebooks:/home/jovyan/work
     environment:
       - JUPYTER_ENABLE_LAB=yes
-      - JUPYTER_TOKEN=your_token
       - CHOWN_HOME=yes
       - CHOWN_HOME_OPTS=-R
       - NB_UID=1000

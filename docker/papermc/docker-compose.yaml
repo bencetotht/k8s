@@ -19,7 +19,7 @@ services:
       server_stack:
         ipv4_address: 10.0.0.5
   tailscale:
-      image: tailscale/tailscale:v1.74.1
+      image: tailscale/tailscale:v1.76.1
       container_name: "tailscale"
       hostname: "host"
       environment:

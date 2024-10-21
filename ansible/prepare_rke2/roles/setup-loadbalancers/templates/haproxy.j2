@@ -1,0 +1,59 @@
+global
+    log stdout  format raw  local0  info
+    daemon
+
+defaults
+    log  global
+    maxconn  8000
+    option  redispatch
+    retries  3
+    timeout  http-request 10s
+    timeout  queue 1m
+    timeout  connect 10s
+    timeout  client 1m
+    timeout  server 1m
+    timeout  check 10s
+    mode http
+    option http-server-close
+
+frontend apiserver
+    bind 0.0.0.0:6443
+    option tcplog
+    mode tcp
+    default_backend apiserver
+
+frontend ingress
+    bind 0.0.0.0:443
+    mode tcp
+    option tcplog
+    default_backend ingress
+
+frontend supervisor
+	bind 0.0.0.0:9345
+	option tcplog
+	mode tcp
+	default_backend supervisor
+
+backend apiserver
+    mode tcp
+    option tcp-check
+    balance roundrobin
+{% for server in groups['servers'] %}
+    server {{ hostvars[server]['inventory_hostname'] }} {{ hostvars[server]['ansible_host'] }}:6443 check
+{% endfor %}
+
+backend ingress
+    mode tcp
+    option tcp-check
+    balance source
+{% for server in groups['servers'] %}
+    server {{ hostvars[server]['inventory_hostname'] }} {{ hostvars[server]['ansible_host'] }}:8443 check
+{% endfor %}
+
+backend supervisor
+    mode tcp
+    balance roundrobin
+    option tcp-check
+{% for server in groups['servers'] %}
+    server {{ hostvars[server]['inventory_hostname'] }} {{ hostvars[server]['ansible_host'] }}:9345 check
+{% endfor %}

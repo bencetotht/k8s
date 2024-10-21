@@ -1,0 +1,61 @@
+apiversion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: traefik
+  namespace: traefik-system
+spec:
+    targetNamespace: traefik-system
+    createNamespace: true
+    version: 32.1.1
+    chart: traefik
+    repo: https://helm.traefik.io/traefik
+    valuesContent: |-
+        globalArguments:
+        - "--global.sendanonymoususage=false"
+        - "--global.checknewversion=false"
+
+        additionalArguments:
+        - "--serversTransport.insecureSkipVerify=true"
+        - "--log.level=INFO"
+
+        deployment:
+        enabled: true
+        replicas: 3
+        annotations: {}
+        podAnnotations: {}
+        additionalContainers: []
+        initContainers: []
+
+        ingressRoute:
+        dashboard:
+            enabled: true
+
+        providers:
+        kubernetesCRD:
+            enabled: true
+            ingressClass: traefik-external
+            allowExternalNameServices: true
+        kubernetesIngress:
+            enabled: true
+            allowExternalNameServices: true
+            publishedService:
+            enabled: false
+
+        rbac:
+        enabled: true
+
+        service:
+        enabled: true
+        type: LoadBalancer
+        annotations: {}
+        labels: {}
+        spec:
+            loadBalancerIP: {{ traefik_lb_ip }}
+        loadBalancerSourceRanges: []
+        externalIPs: []
+
+        metrics:
+        prometheus:
+            serviceMonitor:
+            enabled: true
+            namespace: monitoring

@@ -1,0 +1,20 @@
+vrrp_script chk_haproxy {
+    script 'killall -0 haproxy'
+    interval 2
+}
+
+vrrp_instance haproxy-vip {
+   interface {{ vip_interface }}
+    state MASTER
+    priority 200
+
+    virtual_router_id 51
+
+    virtual_ipaddress {
+        {{ vip }}/24
+    }
+
+    track_script {
+        chk_haproxy
+    }
+}

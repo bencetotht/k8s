@@ -1,0 +1,11 @@
+- name: Run RKE2 executable for server nodes
+  ansible.builtin.shell:
+    become: true
+    cmd: 'curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=server sh -'
+  when: inventory_hostname in groups['servers']
+
+- name: Run RKE2 executable for agent nodes
+  ansible.builtin.shell:
+    become: true
+    cmd: 'curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=agent sh -'
+  when: inventory_hostname in groups['agents']

@@ -1,16 +1,19 @@
-os: "linux"
-arch: "amd64"
+---
+rke2_token: ""
 
-vip_interface: eth0
 vip: 10.10.20.110
+lb_range: 10.10.20.220-10.10.20.223
+lb_pool_name: first-pool
 
-ansible_user: bence
+# default rke2 manifests directory
+# manifests_dir: /var/lib/rancher/rke2/server/manifests/
+manifests_dir: /tmp/manifests/
+traefik_lb_ip: 10.10.20.222
+
 ansible_become: true
 ansible_become_method: sudo
 
-## Constants
-rke2_version: "v1.30.0+rke2r1"
-rke2_install_dir: "/usr/local/bin"
-rke2_binary_url: "https://github.com/rancher/rke2/releases/download/{{ rke2_version }}/rke2.linux-amd64"
-kube_vip_version: "v0.8.0"
-metallb_version: v0.13.12
+# os: "linux"
+# arch: "amd64"
+# rke2_version: "v1.29.4+rke2r1"
+# rke2_install_dir: "/usr/local/bin"

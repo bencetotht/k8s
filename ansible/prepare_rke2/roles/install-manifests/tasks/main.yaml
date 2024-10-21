@@ -1,0 +1,33 @@
+- name: Create directory for RKE2 manifests
+  ansible.builtin.file:
+    path: "{{ manifests_dir }}"
+    state: directory
+    mode: '0755'
+  when: inventory_hostname in groups['servers']
+
+- name: Copy Metallb manifest to servers
+  ansible.builtin.template:
+    src: metallb-ippool.j2
+    dest: "{{ manifests_dir }}/metallb-crs.yaml"
+    owner: root
+    group: root
+    mode: "0755"
+  when: inventory_hostname in groups['servers']
+
+- name: Copy Traefik manifest to servers
+  ansible.builtin.template:
+    src: traefik.j2
+    dest: "{{ manifests_dir }}/traefik.yaml"
+    owner: root
+    group: root
+    mode: "0755"
+  when: inventory_hostname in groups['servers']
+
+- name: Copy Longhorn manifest to servers
+  ansible.builtin.template:
+    src: longhorn.j2
+    dest: "{{ manifests_dir }}/longhorn.yaml"
+    owner: root
+    group: root
+    mode: "0755"
+  when: inventory_hostname in groups['servers']

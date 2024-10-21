@@ -1,0 +1,15 @@
+apiversion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+    targetNamespace: longhorn-system
+    createNamespace: true
+    version: 1.7.2
+    chart: longhorn
+    repo: https://charts.longhorn.io
+    valuesContent: |-
+        metrics:
+        serviceMonitor:
+            enabled: true

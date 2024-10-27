@@ -1,0 +1,13 @@
+- name: Starting RKE2 server service
+  ansible.builtin.systemd:
+    name: rke2-server
+    enabled: true
+    state: started
+  when: inventory_hostname in groups['servers']
+
+- name: Starting RKE2 agent service
+  ansible.builtin.systemd:
+    name: rke2-agent
+    enabled: true
+    state: started
+  when: inventory_hostname in groups['agents']

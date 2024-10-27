@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodump
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: longhorn
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mongodump
+spec:
+  schedule: '@daily'
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+          - name: mongodump
+            persistentVolumeClaim:
+              claimName: mongodump
+          restartPolicy: Never
+          containers:
+            - name: mongodb
+              image: mongo
+              command : ["/bin/sh", "-c"]
+              args: ["mongodump --uri \"mongodb://$(MONGODB_HOST)/?replicaSet=rs0\" -u $(MONGODB_USERNAME) -p $(MONGODB_PASSWORD) --authenticationDatabase $(MONGODB_DB) -o /usr/share/mongodump/$(date +\"%d%m%H\")"]
+              volumeMounts:
+              - mountPath: "/usr/share/mongodump/"
+                name: mongodump
+              env:
+              - name: MONGODB_DB
+                valueFrom:
+                  secretKeyRef:
+                    name: mongo_sm
+                    key: MONGODB_DB
+              - name: MONGODB_HOST
+                valueFrom:
+                  secretKeyRef:
+                   name: mongo_sm
+                   key: MONGODB_HOST
+              - name: MONGODB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: mongo_sm
+                    key: MONGODB_PASSWORD
+              - name: MONGODB_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: mongo_sm
+                    key: MONGODB_USERNAME
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb
+type: Opaque
+data:
+  MONGODB_HOST:
+  MONGODB_DB:
+  MONGODB_USERNAME:
+  MONGODB_PASSWORD:

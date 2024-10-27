@@ -1,11 +1,14 @@
 services:
-  jupyter:
+  jupyter_datascience:
     image: jupyter/datascience-notebook:latest
-    container_name: jupyter
+    container_name: jupyter_datascience
     ports:
       - 8888:8888
     volumes:
       - ./notebooks:/home/jovyan/work
+      - /Users/bencetoth/Developer/Projects/imc-university/MATIE1UE:/home/jovyan/uni/MATIE1UE
+      - /Users/bencetoth/Developer/Projects/imc-university/PROGI1ILV:/home/jovyan/uni/PROGI1ILV
+      - /Users/bencetoth/Developer/Projects/imc-university/SPCSE1:/home/jovyan/uni/SPCSE1
     environment:
       - JUPYTER_ENABLE_LAB=yes
       - CHOWN_HOME=yes
@@ -15,36 +18,36 @@ services:
     user: root
     restart: unless-stopped
 
-  jupyter_tensorflow:
-    image: jupyter/tensorflow-notebook:latest
-    container_name: jupyter_tensorflow
-    ports:
-      - 8888:8888
-    volumes:
-      - ./notebooks:/home/jovyan/work
-    environment:
-      - JUPYTER_ENABLE_LAB=yes
-      - JUPYTER_TOKEN=your_token
-      - CHOWN_HOME=yes
-      - CHOWN_HOME_OPTS=-R
-      - NB_UID=1000
-      - NB_GID=1000
-    user: root
-    restart: unless-stopped
+  # jupyter_tensorflow:
+  #   image: jupyter/tensorflow-notebook:latest
+  #   container_name: jupyter_tensorflow
+  #   ports:
+  #     - 8888:8888
+  #   volumes:
+  #     - ./notebooks:/home/jovyan/work
+  #   environment:
+  #     - JUPYTER_ENABLE_LAB=yes
+  #     - JUPYTER_TOKEN=your_token
+  #     - CHOWN_HOME=yes
+  #     - CHOWN_HOME_OPTS=-R
+  #     - NB_UID=1000
+  #     - NB_GID=1000
+  #   user: root
+  #   restart: unless-stopped
   
-  jupyter_pytorch:
-    image: jupyter/pytorch-notebook:latest
-    container_name: jupyter_pytorch
-    ports:
-      - 8888:8888
-    volumes:
-      - ./notebooks:/home/jovyan/work
-    environment:
-      - JUPYTER_ENABLE_LAB=yes
-      - JUPYTER_TOKEN=your_token
-      - CHOWN_HOME=yes
-      - CHOWN_HOME_OPTS=-R
-      - NB_UID=1000
-      - NB_GID=1000
-    user: root
-    restart: unless-stopped
+  # jupyter_pytorch:
+  #   image: jupyter/pytorch-notebook:latest
+  #   container_name: jupyter_pytorch
+  #   ports:
+  #     - 8888:8888
+  #   volumes:
+  #     - ./notebooks:/home/jovyan/work
+  #   environment:
+  #     - JUPYTER_ENABLE_LAB=yes
+  #     - JUPYTER_TOKEN=your_token
+  #     - CHOWN_HOME=yes
+  #     - CHOWN_HOME_OPTS=-R
+  #     - NB_UID=1000
+  #     - NB_GID=1000
+  #   user: root
+  #   restart: unless-stopped

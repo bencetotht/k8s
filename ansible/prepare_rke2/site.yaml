@@ -29,3 +29,9 @@
   gather_facts: true
   roles:
     - rke2-install
+
+- name: Run RKE2
+  hosts: servers,agents
+  gather_facts: true
+  roles:
+    - rke2-run

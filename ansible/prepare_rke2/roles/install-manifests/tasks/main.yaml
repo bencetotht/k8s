@@ -23,6 +23,15 @@
     mode: "0755"
   when: inventory_hostname in groups['servers']
 
+- name: Copy Traefik helm values file to servers
+  ansible.builtin.template:
+    src: traefik-values.j2
+    dest: "{{ manifests_dir }}/traefik-values.yaml"
+    owner: root
+    group: root
+    mode: "0755"
+  when: inventory_hostname in groups['servers']
+
 - name: Copy Longhorn manifest to servers
   ansible.builtin.template:
     src: longhorn.j2

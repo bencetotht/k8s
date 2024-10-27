@@ -1,14 +1,15 @@
 ---
-rke2_token: ""
+rke2_token: 
 
-vip: 10.10.20.110
-lb_range: 10.10.20.220-10.10.20.223
+vip: 192.168.88.50
+vip_interface: eth0
+lb_range: 192.168.88.100-192.168.88.120
 lb_pool_name: first-pool
 
 # default rke2 manifests directory
 # manifests_dir: /var/lib/rancher/rke2/server/manifests/
 manifests_dir: /tmp/manifests/
-traefik_lb_ip: 10.10.20.222
+traefik_lb_ip: 192.168.88.105
 
 ansible_become: true
 ansible_become_method: sudo

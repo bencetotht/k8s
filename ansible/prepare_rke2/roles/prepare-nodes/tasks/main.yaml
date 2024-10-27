@@ -29,24 +29,32 @@
     reload: true
   tags: sysctl
 
-- name: Setting up IP route for 10.10.10.x network
-  ansible.builtin.shell: ip route add 10.10.20.0/24 via 10.10.10.109
-  when: ansible_host | ipaddr('10.10.10.0/24')
+- name: Starting qemu-guest-agent service
+  ansible.builtin.systemd:
+    name: qemu-guest-agent
+    enabled: true
+    state: started
 
-- name: Setting up IP route for 10.10.20.x network
-  ansible.builtin.shell: ip route add 10.10.10.0/24 via 10.10.20.205
-  when: ansible_host | ipaddr('10.10.20.0/24')
 
-- name: Set cron for automated routing for 10.10.10.x network
-  ansible.builtin.cron:
-    name: "route"
-    special_time: reboot
-    job: "ip route add 10.10.20.0/24 via 10.10.10.109"
-  when: ansible_host | ipaddr('10.10.10.0/24')
+# ONLY FOR MULTISUBNET DEPLOYMENTS
+# - name: Setting up IP route for 10.10.10.x network
+#   ansible.builtin.shell: ip route add 10.10.20.0/24 via 10.10.10.109
+#   when: ansible_host | ipaddr('10.10.10.0/24')
 
-- name: Set cron for automated routing for 10.10.20.x network
-  ansible.builtin.cron:
-    name: "route"
-    special_time: reboot
-    job: ip route add 10.10.10.0/24 via 10.10.20.205
-  when: ansible_host | ipaddr('10.10.20.0/24')
+# - name: Setting up IP route for 10.10.20.x network
+#   ansible.builtin.shell: ip route add 10.10.10.0/24 via 10.10.20.205
+#   when: ansible_host | ipaddr('10.10.20.0/24')
+
+# - name: Set cron for automated routing for 10.10.10.x network
+#   ansible.builtin.cron:
+#     name: "route"
+#     special_time: reboot
+#     job: "ip route add 10.10.20.0/24 via 10.10.10.109"
+#   when: ansible_host | ipaddr('10.10.10.0/24')
+
+# - name: Set cron for automated routing for 10.10.20.x network
+#   ansible.builtin.cron:
+#     name: "route"
+#     special_time: reboot
+#     job: ip route add 10.10.10.0/24 via 10.10.20.205
+#   when: ansible_host | ipaddr('10.10.20.0/24')

@@ -1,0 +1,53 @@
+image:
+  debug: false
+auth:
+  username: admin
+  existingPasswordSecret: rabbitmq-creds
+  existingSecretPasswordKey: rabbitmq-password
+  existingErlangSecret: rabbitmq-creds
+  existingSecretErlangKey: rabbitmq-erlang-cookie
+  ### TLS COMMUNICATION ###
+  # tls:
+  #   enabled: true
+  #   existingSecret: rabbitmq-tls
+
+clustering:
+  enabled: true
+replicaCount: 3
+
+livenessProbe:
+  enabled: true
+readinessProbe:
+  enabled: true
+startupProbe:
+  enabled: false
+
+persistence:
+  enabled: true
+  storageClass: longhorn
+### MANAGEMENT CONSOLE ###
+ingress:
+  enabled: true
+  hostname: rabbitmq.paks.local
+### METRICS ###
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+  prometheusRule:
+    enabled: false
+    namespace: monitoring
+### LDAP AUTHENTICATION ###
+# ldap:
+#   enabled: false
+#   servers:
+#     - ""
+#   port: 389
+#   user_dn_pattern: "cn=${username},dc=example,dc=org"
+#   tls:
+#     enabled: false
+#     cacertfile: ""
+#     certfile: ""
+#     keyfile: ""
+#     verify: verify_none

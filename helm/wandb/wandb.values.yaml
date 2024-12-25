@@ -1,0 +1,25 @@
+### Required for production environments ###
+# license: 
+enableAdminApi: true
+### s3://$ACCESS_KEY_ID:$SECRET_KEY@$HOST/$BUCKET?tls=true
+# bucket: 
+host: my.wandb.com
+
+ingress:
+  enabled: false
+  className: ""
+  hosts:
+    - host: wandb.mycompany.net
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+mysql:
+  # Set this to false if you want to bring your own mysql
+  managed: false
+  # If you have an existing mysql host, specify the host, user, and password here
+  host:
+  user:
+  password:
+  database:
+  command:

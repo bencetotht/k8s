@@ -1,4 +1,5 @@
-filebeatConfig:
+daemonset:
+  filebeatConfig:
     filebeat.yml: |
       filebeat.inputs:
       - type: container

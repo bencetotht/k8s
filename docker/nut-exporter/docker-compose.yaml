@@ -39,7 +39,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
 
   alertmanager:
-    image: prom/alertmanager:v0.27.0
+    image: prom/alertmanager:v0.28.0
     container_name: alertmanager
     volumes:
       - alertmanager_data:/alertmanager

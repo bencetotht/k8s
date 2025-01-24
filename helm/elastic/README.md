@@ -4,3 +4,5 @@ Recommended order of installation:
 - Filebeat
 - Logstash
 - Kibana
+
+> The `elasticsearch-creds` will be created automatically

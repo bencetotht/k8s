@@ -1,0 +1,29 @@
+global:
+  defaultStorageClass: longhorn
+  postgresql:
+    auth:
+      existingSecret: postgresql-auth
+
+architecture: replication
+readReplicas:
+  replicaCount: 1
+
+backup:
+  enabled: true
+
+auth:
+  username: root
+# auth:
+  # user: "user"
+  # postgresPassword: "newPostgresPassword123"
+  # password: "newUserPassword123"
+  # replicationPassword: "newReplicationPassword123"
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+  prometheusRule:
+    enabled: false
+    namespace: monitoring

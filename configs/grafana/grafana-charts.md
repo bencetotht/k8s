@@ -16,3 +16,4 @@
 |Loki Logs| `13186` | https://grafana.com/grafana/dashboards/13186-loki-dashboard/
 |Redis Metrics| `11835` | https://grafana.com/grafana/dashboards/11835-redis-dashboard-for-prometheus-redis-exporter-helm-stable-redis-ha/
 |cert-manager|`20340`|https://grafana.com/grafana/dashboards/20340-cert-manager/
+|postgres|`9628`|https://grafana.com/grafana/dashboards/9628-postgresql-database/

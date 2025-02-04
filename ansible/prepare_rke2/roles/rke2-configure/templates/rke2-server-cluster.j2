@@ -11,3 +11,9 @@ node-label:
   - server=true
 disable:
   - rke2-ingress-nginx
+kubelet-arg:
+  - "max-pods=150"
+  - "enforce-node-allocatable=pods"
+  - "system-reserved=cpu=300m,memory=5Mi,ephemeral-storage=1Gi"
+  - "kube-reserved=cpu=200m,memory=5Mi,ephemeral-storage=1Gi"
+  - "eviction-hard=memory.available<1Gi,nodefs.available<10%"

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  nextcloud-aio-mastercontainer:
+    image: nextcloud/all-in-one:latest
+    container_name: nextcloud-aio-master
+    restart: always
+    networks:
+      - traefik_backend
+    environment:
+      - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.bnbdevelopment.hu
+      - APACHE_PORT=11000
+      - NEXTCLOUD_DATADIR=/mnt/nextcloud_data
+      - NEXTCLOUD_UPLOAD_MAX_SIZE=10G
+    volumes:
+      - nextcloud_aio_master:/mnt/docker-aio-config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.bnbdevelopment.hu`)"
+      - "traefik.http.routers.nextcloud.entrypoints=websecure"
+      - "traefik.http.services.nextcloud.loadbalancer.server.port=11000"
+
+networks:
+  traefik_backend:
+    external: true
+
+volumes:
+  nextcloud_aio_master:

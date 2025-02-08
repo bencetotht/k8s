@@ -1,0 +1,33 @@
+replicaCount: 1
+ingress:
+  enabled: true
+  className: traefik-valami
+nextcloud:
+  host: nextcloud.bnbdevelopemnt.hu
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-secret
+    usernameKey: username
+    passwordKey: password
+  trustedDomains:
+    - nextcloud.bnbdevelopemnt.hu
+  # objectStore:
+  #   s3:
+  #     enabled: true
+  #     existingSecret: nextcloud-s3-secret
+  #     secretKeys:
+  #       host: host
+  #       accessKey: accessKey
+  #       secretKey: secretKey
+  #       bucket: bucket
+persistence:
+  # enabled: true
+  # storageClass: longhorn
+  nextcloudData:
+    enabled: true
+    storageClass: longhorn
+service:
+  annotations:
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
+# metrics:
+#   enabled: true

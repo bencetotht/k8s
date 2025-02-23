@@ -1,29 +1,46 @@
-version: '3.8'
-
 services:
   nextcloud-aio-mastercontainer:
     image: nextcloud/all-in-one:latest
-    container_name: nextcloud-aio-master
+    container_name: nextcloud-aio-mastercontainer
     restart: always
-    networks:
-      - traefik_backend
     environment:
-      - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.bnbdevelopment.hu
+      - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.example.com
       - APACHE_PORT=11000
       - NEXTCLOUD_DATADIR=/mnt/nextcloud_data
       - NEXTCLOUD_UPLOAD_MAX_SIZE=10G
     volumes:
-      - nextcloud_aio_master:/mnt/docker-aio-config
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 8080:8080
+    depends_on:
+      - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.bnbdevelopment.hu`)"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.example.com`)"
       - "traefik.http.routers.nextcloud.entrypoints=websecure"
       - "traefik.http.services.nextcloud.loadbalancer.server.port=11000"
-
-networks:
-  traefik_backend:
-    external: true
+  
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "9000:8080" ###ONLY FOR DEVELOPMENT
+    command:
+      - "--log.level=DEBUG"
+      - "--api=true"
+      - "--api.insecure=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.traefik.address=:8080"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
 
 volumes:
-  nextcloud_aio_master:
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer

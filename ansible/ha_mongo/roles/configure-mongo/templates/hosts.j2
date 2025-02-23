@@ -1,0 +1,4 @@
+127.0.0.1 localhost
+{% for i in range(number_of_nodes) %}
+{{ hostvars[groups['servers'][i]]['ansible_host'] }} rs{{ i }}.mongocluster.local
+{% endfor %}

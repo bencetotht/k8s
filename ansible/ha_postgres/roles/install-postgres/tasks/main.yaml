@@ -1,0 +1,28 @@
+- name: Update and upgrade system
+  ansible.builtin.apt:
+    update_cache: true
+    # upgrade: true
+
+- name: Install repositories
+  ansible.builtin.apt:
+    pkg:
+      - postgresql-common
+
+- name: Postgresql-common utility
+  ansible.builtin.shell: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+
+- name: Update packages
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install postgresql
+  ansible.builtin.apt:
+    pkg:
+      - postgresql 
+      - postgresql-contrib
+
+- name: Stop and disable postgresql service
+  ansible.builtin.systemd:
+    name: postgresql
+    state: stopped
+    enabled: false

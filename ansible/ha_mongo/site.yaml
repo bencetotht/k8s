@@ -1,0 +1,17 @@
+- name: Prepare nodes
+  hosts: servers
+  become: true
+  roles:
+    - role: prepare-nodes
+
+- name: Install MongoDB
+  hosts: servers
+  become: true
+  roles:
+    - role: install-mongo
+
+# - name: Configure MongoDB
+#   hosts: servers
+#   become: true
+#   roles:
+#     - role: configure-mongo

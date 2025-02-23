@@ -1,0 +1,142 @@
+## install etcd
+
+- name: Install wget and curl
+  ansible.builtin.apt:
+    pkg:
+      - wget
+      - curl
+
+- name: Download etcd
+  ansible.builtin.get_url:
+    url: https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-linux-amd64.tar.gz
+    dest: /tmp/etcd-v3.5.9-linux-amd64.tar.gz
+    mode: '0755'
+
+- name: Extract etcd
+  ansible.builtin.unarchive:
+    src: /tmp/etcd-v3.5.9-linux-amd64.tar.gz
+    dest: /tmp/etcd
+    remote_src: true
+
+- name: Move etcd to /usr/local/bin
+  ansible.builtin.file:
+    src: /tmp/etcd/etcd*
+    dest: /usr/local/bin
+    mode: '0755'
+
+- name: Check etcd version
+  ansible.builtin.shell: /usr/local/bin/etcd --version
+  register: etcd_version
+
+- name: Print etcd version
+  ansible.builtin.debug:
+    var: etcd_version.stdout
+
+- name: Check etcdctl version
+  ansible.builtin.shell: /usr/local/bin/etcdctl version
+  register: etcdctl_version
+
+- name: Print etcdctl version
+  ansible.builtin.debug:
+    var: etcdctl_version.stdout
+
+- name: Create etcd system user
+  ansible.builtin.user:
+    name: etcd
+    system: true
+    home: /var/lib/etcd
+    shell: /bin/false
+
+- name: Create etcd configuration directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - /etc/etcd
+    - /etc/etcd/ssl
+
+## certificates
+- name: Install openssl
+  ansible.builtin.apt:
+    pkg:
+      - openssl
+
+- name: Check openssl version
+  ansible.builtin.shell: openssl version
+  register: openssl_version
+
+- name: Print openssl version
+  ansible.builtin.debug:
+    var: openssl_version.stdout
+
+- name: Create etcd certificates directory
+  ansible.builtin.file:
+    path: /home/certs
+    state: directory
+    mode: '0755'
+
+- name: Generate cert authority
+  ansible.builtin.shell:
+    openssl genrsa -out ca.key 2048
+    openssl req -x509 -new -nodes -key ca.key -subj "/CN=etcd-ca" -days 7300 -out ca.crt
+  cwd: /home/certs
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Copy cert authority
+  ansible.builtin.copy:
+    src: ca.crt
+    dest: /etc/etcd/ssl/ca.crt
+    mode: '0755'
+
+- name: Copy certgen script
+  ansible.builtin.copy:
+    src: certgen-node.bash
+    dest: /home/certs/certgen-node.bash
+    mode: '0755'
+
+- name: Copy temp.cnf for node 1
+  ansible.builtin.template:
+    src: temp.cnf.j2
+    dest: /home/certs/temp_1.cnf
+    mode: '0755'
+  with_items:
+    - node_ip: "{{ hostvars[groups['servers'][0]]['ansible_host'] }}"
+
+- name: Copy temp.cnf for node 2
+  ansible.builtin.template:
+    src: temp.cnf.j2
+    dest: /home/certs/temp_2.cnf
+    mode: '0755'
+  with_items:
+    - node_ip: "{{ hostvars[groups['servers'][1]]['ansible_host'] }}"
+
+- name: Copy temp.cnf for node 3
+  ansible.builtin.template:
+    src: temp.cnf.j2
+    dest: /home/certs/temp_3.cnf
+    mode: '0755'
+  with_items:
+    - node_ip: "{{ hostvars[groups['servers'][2]]['ansible_host'] }}"
+
+# - name: Run certgen script for each server
+#   ansible.builtin.shell: /home/certs/certgen-node.bash {{ idx + 1 }}
+#   cwd: /home/certs
+#   loop: "{{ groups['servers'] }}"
+#   loop_control:
+#     index_var: idx
+
+- name: Run certgen script for node 1
+  ansible.builtin.shell: /home/certs/certgen-node.bash 1
+  cwd: /home/certs
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Run certgen script for node 2
+  ansible.builtin.shell: /home/certs/certgen-node.bash 2
+  cwd: /home/certs
+  when: inventory_hostname == groups['servers'][1]
+
+- name: Run certgen script for node 3
+  ansible.builtin.shell: /home/certs/certgen-node.bash 3
+  cwd: /home/certs
+  when: inventory_hostname == groups['servers'][2]

@@ -1,0 +1,24 @@
+# - name: Change hosts file
+#   ansible.builtin.template:
+#     src: hosts.j2
+#     dest: /etc/hosts
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+- name: Copy mongod.conf
+  ansible.builtin.copy:
+    src: templates/mongod.conf.j2
+    dest: /etc/mongod.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+# - name: Start MongoDB service
+#   ansible.builtin.systemd:
+#     name: mongod
+#     state: started
+
+# - name: Create replica set
+#   ansible.builtin.shell: |
+#     mongo --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: '{{ hostvars[groups['servers'][0]]['ansible_host'] }}'}]})"

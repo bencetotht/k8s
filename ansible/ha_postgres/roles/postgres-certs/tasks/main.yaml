@@ -1,0 +1,71 @@
+- name: Create PostgreSQL data directory
+  ansible.builtin.file:
+    path: /var/lib/postgresql/data
+    state: directory
+    mode: '0755'
+
+- name: Create PostgreSQL SSL directory
+  ansible.builtin.file:
+    path: /var/lib/postgresql/ssl
+    state: directory
+    mode: '0755'
+
+- name: Generate certificates on the first server
+  ansible.builtin.shell: |
+    cd /var/lib/postgresql/ssl
+    openssl genrsa -out server.key 2048
+    openssl req -new -key server.key -out server.req -subj "/C=US/ST=California/L=San Francisco/O=My Company/OU=My Department/CN=localhost"
+    openssl req -x509 -key server.key -in server.req -out server.crt -days 7300
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Update CA permissions
+  ansible.builtin.shell:
+    chmod 600 /var/lib/postgresql/ssl/server.key
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Fetch certificates from first server
+  ansible.builtin.fetch:
+    src: "/var/lib/postgresql/ssl/{{ item }}"
+    dest: "/tmp/postgres_certs/"
+    flat: yes
+  with_items:
+    - server.crt
+    - server.key
+    - server.req
+  when: inventory_hostname == groups['servers'][0]
+
+- name: Copy certificates to other servers
+  ansible.builtin.copy:
+    src: "/tmp/postgres_certs/{{ item }}"
+    dest: "/var/lib/postgresql/ssl/{{ item }}"
+    mode: '0600'
+    owner: postgres
+    group: postgres
+  with_items:
+    - server.crt
+    - server.key
+    - server.req
+  when: inventory_hostname != groups['servers'][0]
+
+- name: Update permissions
+  ansible.builtin.shell: |
+    chmod 600 /var/lib/postgresql/ssl/server.key
+    chmod 644 /var/lib/postgresql/ssl/server.crt
+    chmod 600 /var/lib/postgresql/ssl/server.req
+    chown postgres:postgres /var/lib/postgresql/data
+    chown postgres:postgres /var/lib/postgresql/ssl/server.*
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install ACL package
+  ansible.builtin.apt:
+    name: acl
+    state: present
+
+- name: Set ACL permissions for postgres user on etcd certificates
+  ansible.builtin.shell: |
+    setfacl -m u:postgres:r /etc/etcd/ssl/ca.crt
+    setfacl -m u:postgres:r /etc/etcd/ssl/etcd-node*.crt 
+    setfacl -m u:postgres:r /etc/etcd/ssl/etcd-node*.key

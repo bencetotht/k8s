@@ -1,0 +1,5 @@
+- name: Update ETCD_INITIAL_CLUSTER_STATE in etcd.env
+  ansible.builtin.replace:
+    path: /etc/etcd/etcd.env
+    regexp: '^ETCD_INITIAL_CLUSTER_STATE="new"'
+    replace: 'ETCD_INITIAL_CLUSTER_STATE="existing"'

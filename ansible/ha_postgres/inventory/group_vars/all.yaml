@@ -1,0 +1,5 @@
+postgres_superuser: cnV2abjbDpbh64e12987wR4mj5kQ3456Y0Qf
+postgres_replication: sad9a23jga8jsuedrwtsskj74567suiuwe23
+
+vip: 10.10.10.10
+vip_interface: eth0

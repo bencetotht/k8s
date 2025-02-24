@@ -1,0 +1,34 @@
+global
+    log stdout  format raw  local0  info
+    daemon
+
+defaults
+    log  global
+    maxconn  8000
+    option  redispatch
+    retries  3
+    timeout  http-request 10s
+    timeout  queue 1m
+    timeout  connect 10s
+    timeout  client 1m
+    timeout  server 1m
+    timeout  check 10s
+    mode http
+    option http-server-close
+
+frontend postgres_frontend
+    bind *:5432
+    mode tcp
+    default_backend postgres_backend
+
+backend postgres_backend
+    mode tcp
+    option tcp-check
+    option httpchk GET /primary
+    http-check expect status 200
+    timeout connect 5s
+    timeout client 30s
+    timeout server 30s
+    {% for server in groups['servers'] %}
+    server {{ server.name }} {{ server.ansible_host }}:5432 port 8008 check check-ssl verify none
+    {% endfor %}

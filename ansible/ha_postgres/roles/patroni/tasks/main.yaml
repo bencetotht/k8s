@@ -1,0 +1,28 @@
+- name: Install Patroni
+  ansible.builtin.apt:
+    name: patroni
+    state: present
+
+- name: Create directory for patroni
+  ansible.builtin.file:
+    path: /etc/patroni
+    state: directory
+
+- name: Copy patroni config
+  ansible.builtin.template:
+    src: config.yml.j2
+    dest: /etc/patroni/config.yml
+    owner: postgres
+    group: postgres
+    mode: '0600'
+
+- name: Combine certificate and key into server.pem
+  ansible.builtin.shell: |
+    cat /var/lib/postgresql/ssl/server.crt /var/lib/postgresql/ssl/server.key > /var/lib/postgresql/ssl/server.pem
+    chown postgres:postgres /var/lib/postgresql/ssl/server.pem
+    chmod 600 /var/lib/postgresql/ssl/server.pem
+
+- name: Starting patroni
+  ansible.builtin.systemd:
+    name: patroni
+    state: restarted

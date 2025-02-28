@@ -1,41 +1,48 @@
-- name: Install postgres
+# - name: Install postgres
+#   hosts: servers
+#   become: true
+#   roles:
+#     - role: install-postgres
+
+# - name: Install etcd
+#   hosts: servers
+#   become: true
+#   roles:
+#     - role: etcd
+
+# - name: Configure etcd
+#   hosts: servers
+#   become: true
+#   roles:
+#     - role: configure-etcd
+
+# - name: Postgres certificates
+#   hosts: servers
+#   become: true
+#   roles:
+#     - role: postgres-certs
+
+# - name: Patroni setup
+#   hosts: servers
+#   become: true
+#   roles:
+#     - role: patroni
+
+# - name: etcd post setup
+#   hosts: servers
+#   become: true
+#   roles:
+#     - role: etcd-post
+
+# - name: Configuring haproxy
+#   hosts: loadbalancers
+#   become: true
+#   roles:
+#     - role: loadbalancer
+
+- name: Install postgres-exporter
   hosts: servers
   become: true
   roles:
-    - role: install-postgres
-
-- name: Install etcd
-  hosts: servers
-  become: true
-  roles:
-    - role: etcd
-
-- name: Configure etcd
-  hosts: servers
-  become: true
-  roles:
-    - role: configure-etcd
-
-- name: Postgres certificates
-  hosts: servers
-  become: true
-  roles:
-    - role: postgres-certs
-
-- name: Patroni setup
-  hosts: servers
-  become: true
-  roles:
-    - role: patroni
-
-- name: etcd post setup
-  hosts: servers
-  become: true
-  roles:
-    - role: etcd-post
-
-- name: Configuring haproxy
-  hosts: loadbalancers
-  become: true
-  roles:
-    - role: loadbalancer
+    - role: postgres-exporter
+  

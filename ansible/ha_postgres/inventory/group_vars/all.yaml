@@ -1,5 +1,8 @@
-postgres_superuser: cnV2abjbDpbh64e12987wR4mj5kQ3456Y0Qf
-postgres_replication: sad9a23jga8jsuedrwtsskj74567suiuwe23
+postgres_superuser: <POSTGRES_SUPERUSER_PASSWORD>
+postgres_replication: <POSTGRES_REPLICATION_PASSWORD>
 
-vip: 10.10.10.10
+vip: 192.168.88.50
 vip_interface: eth0
+
+postgres_exporter_version: 0.17.0
+postgres_exporter_pass: <EXPOETER_PASSWORD>

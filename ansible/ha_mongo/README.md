@@ -6,6 +6,22 @@ rs.initiate();
 rs.add("ip_addr")
 ```
 
+## Debugging mongodb_exporter
+Get user details:
+```js
+use admin;
+db.getUser("mongodb_exporter");
+```
+If the user doesn't exist or doesn't have the sufficient permissions, add with the following commands:
+```js
+use admin;
+
+// create new user
+db.createUser({ user: "mongodb_exporter", pwd: "securepassword", roles: [ { role: "clusterMonitor", db: "admin" }, { role: "read", db: "local" } ] });
+
+// grant permissions
+db.updateUser("mongodb_exporter", { roles: [ { role: "clusterMonitor", db: "admin" }, { role: "read", db: "local" } ] });
+```
 ## Issue with AVX support:
 *From MongoDB 4.2 the application requires the cpu to have AVX support.*
 ```sh
@@ -16,3 +32,4 @@ echo "deb [signed-by=/usr/share/keyrings/mongodb-server-4.2.gpg] https://repo.mo
 apt update
 apt install -y mongodb-org=4.2.23
 ```
+

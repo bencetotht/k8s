@@ -1,0 +1,14 @@
+[Unit]
+Description=MongoDB Exporter for Prometheus
+After=network.target
+
+[Service]
+User=nobody
+Group=nogroup
+ExecStart=/usr/local/bin/mongodb_exporter --mongodb.uri="mongodb://mongodb_exporter:{{ mongo_exporter_pass }}@localhost:27017/admin?authSource=admin&replicaSet=rs0&directConnection=true" --web.listen-address=":9216"  --collector.diagnosticdata --collector.replicasetstatus --collector.topmetrics --collector.indexstats --collector.pbm --collector.profile --collector.currentopmetrics --collector.collstats --collector.replicasetconfig
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

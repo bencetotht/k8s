@@ -1,0 +1,37 @@
+- name: Download MongoDB Exporter
+  ansible.builtin.get_url:
+    url: https://github.com/percona/mongodb_exporter/releases/download/v{{ mongo_exporter_version }}/mongodb_exporter-{{ mongo_exporter_version }}.linux-amd64.tar.gz
+    dest: /tmp/mongodb_exporter.tar.gz
+    mode: '0644'
+
+- name: Extract MongoDB Exporter
+  ansible.builtin.unarchive:
+    src: /tmp/mongodb_exporter.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: Move MongoDB Exporter to /usr/local/bin
+  ansible.builtin.copy:
+    src: /tmp/mongodb_exporter-{{ mongo_exporter_version }}.linux-amd64/mongodb_exporter
+    dest: /usr/local/bin/mongodb_exporter
+    mode: '0755'
+    remote_src: yes
+
+- name: Create MongoDB Exporter service file
+  ansible.builtin.template:
+    src: mongodb_exporter.service.j2
+    dest: /etc/systemd/system/mongodb_exporter.service
+    mode: '0644'
+
+# use admin
+# db.createUser({user: "mongodb_exporter", pwd: "{{ mongo_exporter_pass }}", roles: [ { role: "read", db: "admin" } ]})
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Enable and start MongoDB Exporter service
+  ansible.builtin.systemd:
+    name: mongodb_exporter
+    enabled: yes
+    state: restarted

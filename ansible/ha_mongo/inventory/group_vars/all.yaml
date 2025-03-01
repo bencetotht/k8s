@@ -1,1 +1,7 @@
 number_of_nodes: 3
+
+replica_admin_password: "<replica_admin_password>"
+root_password: "<root_password>"
+
+mongo_exporter_pass: "<exporter_password>"
+mongo_exporter_version: "0.43.1"

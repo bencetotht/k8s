@@ -11,12 +11,12 @@
   ansible.builtin.apt:
     update_cache: true
 
-# - name: Install MongoDB
-#   ansible.builtin.apt:
-#     pkg:
-#       - mongodb-org
+- name: Install MongoDB
+  ansible.builtin.apt:
+    pkg:
+      - mongodb-org
 
-# - name: Stop MongoDB service
-#   ansible.builtin.systemd:
-#     name: mongod
-#     state: stopped
+- name: Stop MongoDB service
+  ansible.builtin.systemd:
+    name: mongod
+    state: stopped

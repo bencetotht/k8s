@@ -10,8 +10,20 @@
   roles:
     - role: install-mongo
 
-# - name: Configure MongoDB
-#   hosts: servers
-#   become: true
-#   roles:
-#     - role: configure-mongo
+- name: Configure MongoDB
+  hosts: servers
+  become: true
+  roles:
+    - role: configure-mongo
+
+- name: Finalize replicaset
+  hosts: servers
+  become: true
+  roles:
+    - role: finalize-replicaset
+
+- name: MongoDB exporter
+  hosts: servers
+  become: true
+  roles:
+    - role: mongo-exporter

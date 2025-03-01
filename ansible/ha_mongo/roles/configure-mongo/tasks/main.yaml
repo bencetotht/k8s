@@ -14,6 +14,42 @@
     group: root
     mode: '0644'
 
+- name: Create mongodb directory
+  ansible.builtin.file:
+    path: /etc/mongodb
+    state: directory
+    owner: mongodb
+    group: mongodb
+    mode: '0755'
+
+# - name: Create keyfile on first node
+#   ansible.builtin.shell: |
+#     openssl rand -base64 756 > /etc/mongodb/keyfile
+#     chmod 600 /etc/mongodb/keyfile
+#     chown mongodb:mongodb /etc/mongodb/keyfile
+#   when: inventory_hostname == groups['servers'][0]
+
+# - name: Fetch keyfile from first server
+#   ansible.builtin.fetch:
+#     src: "/etc/mongodb/keyfile"
+#     dest: "/tmp/mongodb_keyfile/"
+#     flat: yes
+#   when: inventory_hostname == groups['servers'][0]
+
+# - name: Copy keyfile to other servers
+#   ansible.builtin.copy:
+#     src: "/tmp/mongodb_keyfile/keyfile"
+#     dest: "/etc/mongodb/keyfile"
+#     mode: '0600'
+#     owner: mongodb
+#     group: mongodb
+#   when: inventory_hostname != groups['servers'][0]
+
+- name: Ensure permissions are correct
+  ansible.builtin.shell: |
+    chown mongodb:mongodb /etc/mongodb/keyfile
+    chmod 600 /etc/mongodb/keyfile
+
 # - name: Start MongoDB service
 #   ansible.builtin.systemd:
 #     name: mongod

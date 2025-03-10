@@ -1,0 +1,9 @@
+services:
+  smartctl-exporter:
+    image: quay.io/prometheuscommunity/smartctl-exporter
+    container_name: smartctl-exporter
+    privileged: true
+    user: root
+    ports:
+      - "9633:9633"
+    restart: unless-stopped

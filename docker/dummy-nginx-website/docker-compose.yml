@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   test-website:
-    image: nginx:1.27.4
+    image: nginx:1.27.5
     networks:
       openvpn-internal:
     expose:

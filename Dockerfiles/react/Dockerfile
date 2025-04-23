@@ -9,7 +9,7 @@ ENV TSC_COMPILE_ON_ERROR=true
 ENV ESLINT_NO_DEV_ERRORS=true
 RUN npm run build
 
-FROM nginx:1.27-alpine AS server
+FROM nginx:1.28-alpine AS server
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY ./etc/nginx.conf /etc/nginx/conf.d/default.conf

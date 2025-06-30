@@ -1,0 +1,41 @@
+services:
+  gatus:
+    image: twinproduction/gatus:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - POSTGRES_USER=USER
+      - POSTGRES_PASSWORD=PASSWORD
+      - POSTGRES_DB=DATABASE
+    volumes:
+      - ./config:/config
+    depends_on:
+      - postgres
+    networks:
+      - gatus-network
+      - traefik-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gatus.entrypoints=websecure"
+      - "traefik.http.routers.gatus.rule=Host(`your.domain.tld`)"
+      - "traefik.http.routers.gatus.service=gatus"
+      - "traefik.http.services.gatus.loadbalancer.server.port=8080"
+
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      - POSTGRES_USER=USER
+      - POSTGRES_PASSWORD=PASSWORD
+      - POSTGRES_DB=DATABASE
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - gatus-network
+
+networks:
+  gatus-network:
+    driver: bridge
+  traefik-network:
+    external: true

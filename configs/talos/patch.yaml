@@ -1,0 +1,14 @@
+cluster:
+  network:
+    cni:
+      name: none
+machine:
+  kubelet:
+    extraArgs:
+      max-pods: 150
+      # @see: https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#general-guidelines
+      enforce-node-allocatable: "pods"
+      # as only the pods rule is enforced above, system+kube reservation is zeroed for 8-1=7 allocatable memory
+      system-reserved: "cpu=300m,memory=5Mi,ephemeral-storage=1Gi"
+      kube-reserved: "cpu=200m,memory=5Mi,ephemeral-storage=1Gi"
+      eviction-hard: "memory.available<1Gi,nodefs.available<10%"

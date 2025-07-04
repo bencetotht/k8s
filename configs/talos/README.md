@@ -30,6 +30,11 @@ You can also define a `patch.yaml` file to override configurations.
 talosctl gen config talos-proxmox-cluster https://$CONTROL_PLANE_IP:6443 --config-patch @patch.yaml #... args
 ```
 ### Advanced Configurations
+You can request a specific image from the image factory:
+```bash
+curl -X POST --data-binary @nocloud.yaml https://factory.talos.dev/schematics
+```
+This will return an id, which you can use to download the image from: `https://factory.talos.dev/image/<DISK_ID>/v1.10.4/nocloud-amd64.iso`
 #### Setting up HA using external loadbalancer:
 ##### Dedicated load balancer:
 Create an appropriate frontend for the endpoint, listening on TCP port 6443, and point the backends at the addresses of each of the Talos control plane nodes. Your Kubernetes endpoint will be the IP address of the load balancer front end, with the port appended.
@@ -43,7 +48,16 @@ machine:
         vip:
           ip: 192.168.88.50
 ```
-
+#### Configuring Longhorn
+To configure Longhorn you need to enable the following extensions:
+```yaml
+customization:
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/iscsi-tools
+      - siderolabs/util-linux-tools
+```
+When upgrading a Talos Linux node, always include the `--preserve` option in the command. This option explicitly tells Talos to keep ephemeral data intact.
 ## Configuring Control Panes
 ```bash
 talosctl apply-config --insecure --nodes $CONTROL_PLANE_IP --file conf/controlplane.yaml

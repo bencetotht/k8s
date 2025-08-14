@@ -26,7 +26,7 @@ services:
       - "traefik.http.services.shlink-service.loadbalancer.server.port=8080"
 
   database:
-    image: mariadb:11.8
+    image: mariadb:12.0
     restart: always
     container_name: shlink-database
     environment:

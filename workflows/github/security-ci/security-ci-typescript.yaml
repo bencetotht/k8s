@@ -1,0 +1,89 @@
+---
+name: Main CI/CD Pipeline
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - docs/**
+  workflow_dispatch:
+
+jobs:
+  unit-test:
+    name: Unit test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npx eslint . --ext .ts
+
+      - name: Run Tests
+        run: npm test -- --coverage
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+  static-analysis:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  security-scans:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan dependencies with Trivy
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-type: fs
+          ignore-unfixed: true
+          format: table
+          exit-code: 1
+          severity: HIGH,CRITICAL
+          path: .
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        continue-on-error: true # TODO: Remove this once we have a proper config
+        env:
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: true
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  semgrep:
+    name: semgrep-oss/scan
+    runs-on: ubuntu-latest
+
+    container:
+      image: semgrep/semgrep
+
+    if: (github.actor != 'dependabot[bot]')
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: semgrep scan --config auto

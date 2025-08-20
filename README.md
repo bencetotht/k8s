@@ -41,7 +41,7 @@ Simple automation scripts to help reduce the amount of copy-pasting from website
 - **Setup**: Linux system configuration and Proxmox automations
 - **Docker**: Container management and maintenance
 > [!TIP]
-> All of the scripts can be used with directly with `curl https://raw.githubusercontent.com/bencetotht/k8s/refs/heads/main/scripts/<SCRIPT_FOLDER>/<SCRIPT_NAME>.bash | bash`
+> All of the scripts can be invoked directly with `curl https://raw.githubusercontent.com/bencetotht/k8s/refs/heads/main/scripts/<SCRIPT_FOLDER>/<SCRIPT_NAME>.bash | bash`
 
 > [!WARNING]
 > You should never blindly invoke downloaded scripts from the internet. Please take a look at each of them to understand what they do before execute them.

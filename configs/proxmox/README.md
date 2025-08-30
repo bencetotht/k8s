@@ -17,3 +17,10 @@ iface vmbr0 inet static
 ```
 - all bond options must match with the switch configuration
 - first configure the bond on the device, then on the switch
+
+# Export / Import LXC
+```bash
+vzdump 214 --mode stop --compress zstd --storage local
+rsync -avz /var/lib/vz/dump/vzdump-lxc-214-2025_03_29-20_01_30.* root@pve3:/var/lib/vz/dump/
+pct restore <new-vmid> /var/lib/vz/dump/vzdump-lxc-258-2025_08_28-17_40_57.tar.zst --storage local-lvm
+```

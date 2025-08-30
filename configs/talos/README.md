@@ -82,6 +82,10 @@ Bootstrap cluster:
 ```bash
 talosctl --talosconfig $TALOSCONFIG bootstrap
 ```
+This step usually takes multiple minutes. Check console output for activity:
+```bash
+talosctl --talosconfig talosconfig dashboard -e $ENDPOINT_IP -n $CONTROL_PLANE_IP
+```
 
 ## Using the Cluster
 ```bash
@@ -90,6 +94,8 @@ talosctl config endpoint $CONTROL_PLANE_IP
 talosctl config node $CONTROL_PLANE_IP
 # retrieve kubeconfig
 talosctl --talosconfig $TALOSCONFIG kubeconfig .
+# use kubectl
+kubectl get all --kubeconfig kubeconfig
 ```
 
 ## Advanced

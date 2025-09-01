@@ -9,3 +9,5 @@ id_rsa
 .venv/*
 .venv
 docker/jupyter/notebooks
+
+data/

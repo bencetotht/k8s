@@ -1,0 +1,25 @@
+replication_factor = 1 # for single-node set 1, for multi-node set 2
+consistency_mode = "consistent"
+
+rpc_bind_addr = "0.0.0.0:3901"
+rpc_public_addr = "127.0.0.1:3901"
+rpc_secret = "0f2c1797950deef5d9fb8849d6396e90f7db21106d8a53d792caf5a102173808" # openssl rand -hex 32
+
+data_dir = "/var/lib/garage/data"
+metadata_dir = "/var/lib/garage/meta"
+metadata_snapshots_dir = "/var/lib/garage/snapshots"
+
+[admin]
+api_bind_addr = "0.0.0.0:3903"
+admin_token = "UkLeGWEvHnXBqnueR3ISEMWpOnm40jH2tM2HnnL/0F4=" # openssl rand -hex 32
+metrics_token = "BCAdFjoa9G0KJR0WXnHHm7fs1ZAbfpI8iIZ+Z/a2NgI="
+
+[s3_api]
+api_bind_addr = "[::]:3900"
+s3_region = "garage"
+root_domain = ".s3.garage"
+
+[s3_web]
+bind_addr = "[::]:3902"
+root_domain = ".web.garage"
+add_host_to_metrics = true

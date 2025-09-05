@@ -19,3 +19,4 @@
 |postgres|`9628`|https://grafana.com/grafana/dashboards/9628-postgresql-database/
 |patroni|`18870`|https://grafana.com/grafana/dashboards/18870-postgresql-patroni/
 |smartctl dashboards| `20204` and `22604` | https://grafana.com/grafana/dashboards/20204-smart-hdd/ and https://grafana.com/grafana/dashboards/22604-smartctl-exporter-dashboard/
+|Kube State Metrics v2|`21742`|https://grafana.com/grafana/dashboards/21742-object-s-health-kube-state-metrics-v2/

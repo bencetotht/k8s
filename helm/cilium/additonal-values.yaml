@@ -1,0 +1,27 @@
+installNoConntrackIptablesRules: true
+operator:
+  replicas: 1
+k8sServiceHost: $API_SERVER_IP
+hubble:
+  relay:
+    enabled: true
+  ui:
+    enabled: false
+cni:
+  chainingMode: none
+etcd:
+  enabled: false
+cluster:
+  name: talos
+  id: 1
+nodeinit:
+  enabled: true
+  restartPods: true
+  loadBalancer:
+    l7:
+      backend: envoy
+cni:
+  exclusive: true
+ipam:
+  mode: kubernetes
+kubeProxyReplacement: true

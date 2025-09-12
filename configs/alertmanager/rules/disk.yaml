@@ -1,0 +1,70 @@
+groups:
+# smartctl alerts for disk health
+- name: smartctl_alerts
+  rules:
+  - alert: SmartctlStatusError
+    expr: (smartctl_device_smart_status * on(instance, device) group_left(interface,serial_number,model_family,model_name) smartctl_device) != 1
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: "{{ $labels.model_name }}: Smartctl Status Error ({{ $labels.instance }} / {{ $labels.device }})."
+      description: Smartctl status error detected on node {{ $labels.instance }}. \n Disk: {{ $labels.device }} \n Model: {{ $labels.model_name }}
+  - alert: SmartctlCriticalError
+    expr: smartctl_device_critical_warning * on(instance, device) group_left(interface,serial_number,model_family,model_name) smartctl_device > 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      title: "{{ $labels.model_name }}: Smartctl Critical Error ({{ $labels.instance }} / {{ $labels.device }})."
+      description: "Smartctl critical error detected on node {{ $labels.instance }}. \n Disk: {{ $labels.device }} \n Model: {{ $labels.model_name }}"
+      details: "Critical warning: {{ $value }}"
+
+# ZFS alerts
+- name: zfs_alerts
+  rules:
+  - alert: ZFSPoolOffline
+    expr: node_zfs_zpool_state{state="offline"} > 0
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: "{{ $labels.zpool }}: ZFS Pool Offline ({{ $labels.instance }})"
+      description: "ZFS pool is offline on node {{ $labels.instance }}. \n Pool: {{ $labels.zpool }}"
+      details: "State: {{ $value }}"
+  - alert: ZFSPoolDegraded
+    expr: node_zfs_zpool_state{state="degraded"} > 0
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: "{{ $labels.zpool }}: ZFS Pool Degraded ({{ $labels.instance }})"
+      description: "ZFS pool is degraded on node {{ $labels.instance }} | Pool: {{ $labels.zpool }}"
+      details: "State: {{ $value }}"
+  - alert: ZFSPoolFaulted
+    expr: node_zfs_zpool_state{state="faulted"} > 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      title: "{{ $labels.zpool }}: ZFS Pool Faulted ({{ $labels.instance }})"
+      description: "ZFS pool is faulted on node {{ $labels.instance }}. \n Pool: {{ $labels.zpool }}"
+      details: "State: {{ $value }}"
+  - alert: ZFSPoolUnavailable
+    expr: node_zfs_zpool_state{state="unavail"} > 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      title: "{{ $labels.zpool }}: ZFS Pool Unavailable ({{ $labels.instance }})"
+      description: "ZFS pool is unavailable on node {{ $labels.instance }}. \n Pool: {{ $labels.zpool }}"
+      details: "State: {{ $value }}"
+  - alert: DegradedSpace
+    expr: 100 * (1 - node_filesystem_avail_bytes / node_filesystem_size_bytes) > 80
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: "Running out of space: {{ $labels.device }}"
+      description: "Running out of space on node {{ $labels.instance }}. \n Device: {{ $labels.device }} \n Mountpoint: {{ $labels.mountpoint }}"
+      details: "Space: {{ $value }}%"

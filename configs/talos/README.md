@@ -100,16 +100,36 @@ kubectl get all --kubeconfig kubeconfig
 
 ## Advanced
 ### Configure Cilium CNI 
-```bash
-helm install \
-    cilium \
-    cilium/cilium \
-    --version 1.15.6 \
-    --namespace kube-system \
-    --set ipam.mode=kubernetes \
-    --set kubeProxyReplacement=false \
-    --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
-    --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
-    --set cgroup.autoMount.enabled=false \
-    --set cgroup.hostRoot=/sys/fs/cgroup
+Check out the Cilium documentation under `/helm/cilium`
+
+### Longhorn
+To configure Longhorn, add the following section into your patch file:
+```yaml
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+# For V2 Volumes
+  sysctls:
+    vm.nr_hugepages: "1024"
+  kernel:
+    modules:
+      - name: nvme_tcp
+      - name: vfio_pci
 ```
+Before installing Longhorn, create the namespace and label with privileged mode:
+```bash
+kubectl create ns longhorn-system
+kubectl label namespace longhorn-system pod-security.kubernetes.io/enforce=privileged
+```
+During node upgrades, you must include the `--preserve` flag.
+```bash
+talosctl upgrade --nodes 10.20.30.40 --image ghcr.io/siderolabs/installer:v1.7.6 --preserve
+```
+If you do not include the `--preserve` option, Talos wipes /var/lib/longhorn, destroying all replicas stored on that node.

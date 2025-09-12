@@ -10,11 +10,11 @@ wget $IMG_URL
 
 qm create $VMID --name "talos-template" --memory 16384 --cores 2 --sockets 2 --net0 virtio,bridge=vmbr0 --agent enabled=1 --cpu host
 
-qm set $VMID --scsi0 $STORAGE_POOL:32 # add main drive
+qm set $VMID --ide1 $STORAGE_POOL:32 # add main drive
 qm set $VMID --ide2 $STORAGE_POOL:cloudinit # add cloud-init drive
 qm importdisk $VMID nocloud-amd64.iso $STORAGE_POOL # load iso
 qm set $VMID --ide0 $STORAGE_POOL:vm-$VMID-disk-1,media=cdrom # add optical drive with iso
-qm set $VMID --boot 'order=scsi0;ide0;net0'
+qm set $VMID --boot 'order=ide1;ide0;net0'
 # set cloud-init config
 qm set $VMID --ciuser bence --cipassword $PASSWORD --nameserver 1.1.1.1 --searchdomain 1.1.1.1 --ssh-key $SSHKEY --ipconfig0 ip=dhcp
 # regenerate cloud-init config

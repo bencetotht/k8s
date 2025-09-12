@@ -1,3 +1,4 @@
+# Traefik alerts
 groups:
 - name: traefik_alerts
   rules:

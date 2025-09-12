@@ -1,4 +1,7 @@
-# Useful Grafana charts for various applications:
+# Grafana Charts
+This document and the `/dashboards` folder contains useful dashboards for monitoring various services.
+
+## Public Dashboards
 |Chart name|Chart ID|Chart URL|
 |:-:|:-:|:-:|
 |Node Exporter Full|`1860`|https://grafana.com/grafana/dashboards/1860-node-exporter-full/|

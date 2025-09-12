@@ -1,0 +1,64 @@
+# Alerts for power management with smart plugs
+groups:
+- name: power_alerts
+  rules:
+  - alert: PowerSocketOff
+    expr: nut_load > 0.90
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: UPS is critical load (instance {{ $labels.ups }})
+      description: UPS is critical load. Consider shutting down. \n  VALUE = {{ $value }}
+  - alert: PowerHighLoad
+    expr: |
+      vector(
+        scalar(homeassistant_sensor_power_w{entity="sensor.sonoff_100255fc7c_power"})
+        + scalar(nut_real_power_watts{instance="192.168.88.253:3493"})
+      ) > 1000
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: Power is on high load
+      description: "Power is on high load."
+      details: "Load: {{ $value }}W"
+  - alert: PowerCriticalLoad
+    expr: |
+      vector(
+        scalar(homeassistant_sensor_power_w{entity="sensor.sonoff_100255fc7c_power"})
+        + scalar(nut_real_power_watts{instance="192.168.88.253:3493"})
+      ) > 2500
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      title: Power is critical load
+      description: "Power is critical load. Consider shutting down."
+      details: "Load: {{ $value }}W"
+  - alert: PowerHighAmperage
+    expr: homeassistant_sensor_current_a{entity="sensor.sonoff_100255fc7c_current"} > 9
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: Power is high amperage
+      description: "Power is high amperage. Consider shutting down."
+      details: "Current: {{ $value }}A"
+  - alert: PowerUnusualDailyKwh
+    expr: |
+      (
+        rate(homeassistant_sensor_energy_kwh{entity="sensor.sonoff_100255fc7c_energy_day"}[5m]) * 3600
+      )
+      >
+      1.5 *
+      avg_over_time(
+        rate(homeassistant_sensor_energy_kwh{entity="sensor.sonoff_100255fc7c_energy_day"}[5m])[1d:]
+      ) * 3600
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: Unusual daily kwh detected.
+      description: "Unusual daily kwh detected. It is higher than 1.5 times the average daily kwh."
+      details: "Daily kwh: {{ $value }}kWh"

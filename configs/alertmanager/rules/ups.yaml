@@ -1,0 +1,39 @@
+groups:
+- name: ups_alerts
+  rules:
+  - alert: UpsOnBattery
+    expr: nut_ups_status{status="OB"} > 0
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: UPS is on battery (instance {{ $labels.ups }})
+      description: UPS is on battery.
+      details: "Value: {{ $value }}"
+  - alert: UpsLowOnBattery
+    expr: nut_battery_charge < 0.35 and nut_ups_status{status="OB"} > 0
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: UPS is low on battery (instance {{ $labels.ups }})
+      description: UPS is low on battery.
+      details: "Value: {{ $value }}"
+  - alert: UpsHighLoad
+    expr: nut_load > 0.80
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      title: UPS is high load (instance {{ $labels.ups }})
+      description: UPS is high load.
+      details: "Value: {{ $value }}"
+  - alert: UpsCriticalLoad
+    expr: nut_load > 0.90
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      title: UPS is critical load (instance {{ $labels.ups }})
+      description: "UPS is critical load. Consider shutting down."
+      details: "Value: {{ $value }}"

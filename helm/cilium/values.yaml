@@ -1,24 +1,48 @@
-# Enable L7 Policy Enforcement
-policyEnforcementMode: always
-# Transparent Encryption
-encryption:
-  enabled: true
-  type: wireguard
-# Loadbalancer Settings
-loadBalancer:
-  acceleration: disabled
-l2announcements:
-  enabled: true
-# Service Mesh Features
-ingressController:
-  enabled: true
+### Prometheus Exporters ###
+# ClusterMesh Settings
+clustermesh:
+  apiserver:
+    metrics:
+      serviceMonitor: 
+        enabled: true
+# Envoy Proxy Settings
+envoy:
+  prometheus:
+    serviceMonitor:
+      enabled: true
+# Hubble Settings
+hubble:
+  metrics:
+    enabled: ["dns", "drop", "tcp", "flow", "port-distribution", "icmp", "httpV2:exemplars=true;labelsContext=source_ip,source_namespace,source_workload,destination_ip,destination_namespace,destination_workload,traffic_direction"]
+    enableOpenMetrics: true
+    serviceMonitor:
+      enabled: true
+  relay:
+    enabled: true
+    prometheus:
+      serviceMonitor:
+        enabled: true
+  ui:
+    enabled: false
 # Operator settings
 operator:
   prometheus:
     enabled: true
     serviceMonitor:
       enabled: true
-      namespace: monitoring
+### Cilium Settings ###
+# Enable L7 Policy Enforcement
+policyEnforcementMode: always
+# Transparent Encryption
+encryption:
+  enabled: true
+  type: wireguard
+# Service Mesh Features
+ingressController:
+  enabled: true
+# Loadbalancer Settings
+l2announcements:
+  enabled: true
 # gRPC Support
 gatewayAPI:
   enableAlpn: true

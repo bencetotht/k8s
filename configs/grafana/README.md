@@ -10,7 +10,7 @@ This document and the `/dashboards` folder contains useful dashboards for monito
 |Traefik|`4475`|https://grafana.com/grafana/dashboards/4475-traefik/|
 |NodeJS Prometheus Dashboard|`11159`|https://grafana.com/grafana/dashboards/11159-nodejs-application-dashboard/|
 |Consul Dashboard|`13396`|https://grafana.com/grafana/dashboards/13396-consul-server-monitoring/|
-|Longhorn Dashboard|`17626`|https://grafana.com/grafana/dashboards/17626-longhorn-example-v1-4-0/|
+|Longhorn Dashboard|`16888`|https://grafana.com/grafana/dashboards/17626-longhorn-example-v1-4-0/|
 |MongoDB Dashboard|`2583`|https://grafana.com/grafana/dashboards/2583-mongodb/
 |Proxmox Dashboard|`10048`|https://grafana.com/grafana/dashboards/10048-proxmox/|
 |NUT server dashboard|`14371`|https://grafana.com/grafana/dashboards/14371-nut/|

@@ -7,7 +7,7 @@ This document and the `/dashboards` folder contains useful dashboards for monito
 |Node Exporter Full|`1860`|https://grafana.com/grafana/dashboards/1860-node-exporter-full/|
 |kube-state-metrics-v2|`13332`|https://grafana.com/grafana/dashboards/13332-kube-state-metrics-v2/
 |RabbitMQ-Overview|`10991`|https://grafana.com/grafana/dashboards/10991-rabbitmq-overview/|
-|Traefik|`4475`|https://grafana.com/grafana/dashboards/4475-traefik/|
+|Traefik|`17346`|https://grafana.com/grafana/dashboards/17346-traefik-official-standalone-dashboard/|
 |NodeJS Prometheus Dashboard|`11159`|https://grafana.com/grafana/dashboards/11159-nodejs-application-dashboard/|
 |Consul Dashboard|`13396`|https://grafana.com/grafana/dashboards/13396-consul-server-monitoring/|
 |Longhorn Dashboard|`16888`|https://grafana.com/grafana/dashboards/17626-longhorn-example-v1-4-0/|
@@ -23,3 +23,4 @@ This document and the `/dashboards` folder contains useful dashboards for monito
 |patroni|`18870`|https://grafana.com/grafana/dashboards/18870-postgresql-patroni/
 |smartctl dashboards| `20204` and `22604` | https://grafana.com/grafana/dashboards/20204-smart-hdd/ and https://grafana.com/grafana/dashboards/22604-smartctl-exporter-dashboard/
 |Kube State Metrics v2|`21742`|https://grafana.com/grafana/dashboards/21742-object-s-health-kube-state-metrics-v2/
+|HAProxy|`12030`|https://grafana.com/grafana/dashboards/12030-haproxy/

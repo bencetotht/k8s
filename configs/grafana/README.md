@@ -24,3 +24,4 @@ This document and the `/dashboards` folder contains useful dashboards for monito
 |smartctl dashboards| `20204` and `22604` | https://grafana.com/grafana/dashboards/20204-smart-hdd/ and https://grafana.com/grafana/dashboards/22604-smartctl-exporter-dashboard/
 |Kube State Metrics v2|`21742`|https://grafana.com/grafana/dashboards/21742-object-s-health-kube-state-metrics-v2/
 |HAProxy|`12030`|https://grafana.com/grafana/dashboards/12030-haproxy/
+|Authentik|`14837`|https://grafana.com/grafana/dashboards/14837-authentik/

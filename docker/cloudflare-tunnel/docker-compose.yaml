@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   tunnel:
-    image: cloudflare/cloudflared:2025.9.0
+    image: cloudflare/cloudflared:2025.9.1
     restart: unless-stopped
     command: tunnel run
     environment:

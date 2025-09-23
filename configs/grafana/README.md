@@ -25,3 +25,4 @@ This document and the `/dashboards` folder contains useful dashboards for monito
 |Kube State Metrics v2|`21742`|https://grafana.com/grafana/dashboards/21742-object-s-health-kube-state-metrics-v2/
 |HAProxy|`12030`|https://grafana.com/grafana/dashboards/12030-haproxy/
 |Authentik|`14837`|https://grafana.com/grafana/dashboards/14837-authentik/
+|Mikrotik MKTXP Exporter|`13679`|https://grafana.com/grafana/dashboards/13679-mikrotik-mktxp-exporter/

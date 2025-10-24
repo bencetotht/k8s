@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   haproxy:
-    image: haproxy:3.2.6
+    image: haproxy:3.2.7
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:

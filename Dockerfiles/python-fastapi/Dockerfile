@@ -1,5 +1,5 @@
 # Builder stage
-FROM python:3.13-slim as builder
+FROM python:3.14-slim as builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -15,7 +15,7 @@ RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
 # Final stage
-FROM python:3.13-slim as production
+FROM python:3.14-slim as production
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1

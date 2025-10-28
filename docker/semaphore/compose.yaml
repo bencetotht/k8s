@@ -14,7 +14,7 @@ services:
       - 3000:3000
     depends_on:
       - semaphore_db
-    image: semaphoreui/semaphore:v2.16.34
+    image: semaphoreui/semaphore:v2.16.36
     environment:
       SEMAPHORE_DB_DIALECT: postgres
       SEMAPHORE_DB_HOST: semaphore_db

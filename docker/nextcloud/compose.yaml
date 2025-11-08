@@ -22,7 +22,7 @@ services:
       - "traefik.http.services.nextcloud.loadbalancer.server.port=11000"
   
   traefik:
-    image: traefik:v3.5
+    image: traefik:v3.6
     container_name: traefik
     restart: always
     ports:

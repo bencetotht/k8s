@@ -11,7 +11,7 @@ services:
     networks:
       - loki
   promtail:
-    image: grafana/promtail:3.6.10
+    image: grafana/promtail:3.6.11
     volumes:
       - /var/log:/var/log
       - ./promtail:/etc/promtail

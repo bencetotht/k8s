@@ -2,7 +2,7 @@ version: "3"
 
 services:
   shlink:
-    image: shlinkio/shlink:4
+    image: shlinkio/shlink:5
     restart: always
     container_name: shlink-backend
     environment:

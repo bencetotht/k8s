@@ -1,5 +1,5 @@
 certifi==2025.11.12
-charset-normalizer==3.4.7
+charset-normalizer==3.4.9
 idna==3.18
 psycopg2==2.9.12
 requests==2.34.2

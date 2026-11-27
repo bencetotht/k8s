@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   loki:
-    image: grafana/loki:3.7.10
+    image: grafana/loki:3.7.11
     volumes:
       - ./loki:/etc/loki
     ports:
